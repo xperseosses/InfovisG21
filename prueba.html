@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Estático: Efectos del Alcohol en la Sangre</title>
+    <style>
+        /* --- Estilos Generales --- */
+        :root {
+            --color-texto: #333;
+            --color-borde: #e9ecef;
+            
+            /* Colores para la escala de riesgo (Naranja -> Rojo -> Negro) */
+            --riesgo-bajo: #fd7e14;      /* Naranja */
+            --riesgo-moderado: #e74c3c;   /* Naranja rojizo */
+            --riesgo-alto: #dc3545;       /* Rojo */
+            --riesgo-peligro: #000000;      /* Negro */
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7f9;
+            color: var(--color-texto);
+            overflow: hidden; /* Evita cualquier scroll */
+        }
+
+        /* --- Estructura Principal (Ocupa toda la pantalla) --- */
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* 100% de la altura de la ventana */
+            width: 100vw;  /* 100% del ancho de la ventana */
+        }
+
+        /* --- Encabezado y Disclaimer --- */
+        header {
+            background-color: #343a40;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .disclaimer {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 8px;
+            font-size: 0.8em;
+            text-align: center;
+            flex-shrink: 0; /* No se encoge */
+        }
+
+        /* --- Contenido Principal (Layout de Columnas) --- */
+        main {
+            display: flex;
+            flex-direction: row; /* Columnas una al lado de la otra */
+            flex-grow: 1; /* Ocupa el resto del espacio vertical */
+            background-color: #ffffff;
+            width: 100%;
+        }
+        
+        /* --- Cada Columna/Tarjeta de BAC --- */
+        .bac-column {
+            flex: 1; /* Cada columna ocupa el mismo espacio horizontal */
+            display: flex;
+            flex-direction: column; /* Contenido apilado verticalmente */
+            border-right: 1px solid var(--color-borde);
+            padding: 15px;
+            text-align: center;
+        }
+        .bac-column:last-child {
+            border-right: none;
+        }
+        .bac-info {
+            height: 12vw; /* Altura fija relativa al ancho de la pantalla */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Centra el contenido (%, p, drinks) verticalmente */
+        }
+        .bac-info h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.5vw; /* Tamaño de fuente relativo al ancho de la pantalla */
+        }
+
+        .bac-info p {
+            margin: 0;
+            font-size: 1vw;
+            color: #6c757d;
+        }
+
+        .bac-info .drinks {
+            font-size: 2.5vw;
+            margin: 10px 0;
+        }
+
+        .effects-info {
+            margin-top: 15px;
+        }
+
+        .effects-info h2 {
+            font-size: 1.2vw;
+            margin: 0 0 10px 0;
+        }
+
+        .effects-info ul {
+            list-style: none;
+            padding-left: 0;
+            text-align: left;
+            font-size: 0.85vw; /* Tamaño de fuente más pequeño para que quepa el texto */
+        }
+        
+        .effects-info li {
+            margin-bottom: 8px;
+        }
+
+        /* --- Colores por Nivel de Riesgo (Borde Superior) --- */
+        #col-1, #col-2 { border-top: 8px solid var(--riesgo-bajo); }
+        #col-3, #col-4 { border-top: 8px solid var(--riesgo-moderado); }
+        #col-5, #col-6 { border-top: 8px solid var(--riesgo-alto); }
+        #col-7 { border-top: 8px solid var(--riesgo-peligro); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Dashboard Estático: Efectos del Alcohol en el Cuerpo por Nivel de BAC</h1>
+        </header>
+        
+        <main>
+            <article class="bac-column" id="col-1">
+                <div class="bac-info">
+                    <h3>0.02% - 0.04%</h3>
+                    <p>Aprox. 1-2 bebidas</p>
+                    <div class="drinks">🍺 | 🍷</div>
+                </div>
+                <div class="effects-info">
+                    <h2>Relajación Inicial</h2>
+                    <ul>
+                        <li>Sensación de mareo leve.</li>
+                        <li>Estado de relajación y calidez.</li>
+                        <li>Alteración del humor ("subidón").</li>
+                        <li>Leve deterioro del juicio.</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="bac-column" id="col-2">
+                <div class="bac-info">
+                    <h3>0.05% - 0.07%</h3>
+                    <p>Aprox. 2-3 bebidas</p>
+                    <div class="drinks">🍺🍺 | 🍷</div>
+                </div>
+                <div class="effects-info">
+                    <h2>Euforia</h2>
+                    <ul>
+                        <li>Sensación de "prendido" o "buzzed".</li>
+                        <li>Euforia y desinhibición.</li>
+                        <li>Deterioro menor en razonamiento.</li>
+                        <li>Emociones exageradas.</li>
+                    </ul>
+                </div>
+            </article>
+            
+            <article class="bac-column" id="col-3">
+                <div class="bac-info">
+                    <h3>0.08% - 0.10%</h3>
+                    <p>Aprox. 3-4 bebidas</p>
+                    <div class="drinks">🍺🍺🍺 | 🥃</div>
+                </div>
+                <div class="effects-info">
+                    <h2>Deterioro Evidente</h2>
+                    <ul>
+                        <li>Coordinación muscular deficiente.</li>
+                        <li>Deterioro del equilibrio y habla.</li>
+                        <li>Juicio y autocontrol afectados.</li>
+                        <li>Tiempo de reacción más lento.</li>
+                    </ul>
+                </div>
+            </article>
+            
+            <article class="bac-column" id="col-4">
+                <div class="bac-info">
+                    <h3>0.11% - 0.15%</h3>
+                    <p>Aprox. 4-5 bebidas</p>
+                    <div class="drinks">🍺🍺🍺🍺|🥃</div>
+                </div>
+                <div class="effects-info">
+                    <h2>Deterioro Severo</h2>
+                    <ul>
+                        <li>Efecto depresor pronunciado.</li>
+                        <li>Deterioro motor grueso.</li>
+                        <li>Juicio y percepción severamente afectados.</li>
+                        <li>Pueden ocurrir vómitos.</li>
+                    </ul>
+                </div>
+            </article>
+            
+            <article class="bac-column" id="col-5">
+                <div class="bac-info">
+                    <h3>0.16% - 0.24%</h3>
+                    <p>Aprox. 5-7 bebidas</p>
+                    <div class="drinks">🍺🍺🍺🍺🍺|🥃</div>
+                </div>
+                <div class="effects-info">
+                    <h2>Confusión</h2>
+                    <ul>
+                        <li>Fuerte estado de depresión y náuseas.</li>
+                        <li>Visión borrosa y desorientación.</li>
+                        <li>Posible pérdida de consciencia ("blackout").</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="bac-column" id="col-6">
+                <div class="bac-info">
+                    <h3>0.25% - 0.30%</h3>
+                    <p>Aprox. 7-8+ bebidas</p>
+                    <div class="drinks">🍺🍺🍺🍺🍺🍺|🥃🥃</div>
+                </div>
+                <div class="effects-info">
+                    <h2>Estupor</h2>
+                    <ul>
+                        <li>Funciones mentales y físicas severamente deterioradas.</li>
+                        <li>Poca capacidad de comprensión.</li>
+                        <li>Puede desmayarse súbitamente.</li>
+                    </ul>
+                </div>
+            </article>
+            
+            <article class="bac-column" id="col-7">
+                <div class="bac-info">
+                    <h3>0.31% y más</h3>
+                    <p>Más de 8 bebidas</p>
+                    <div class="drinks">☠️</div>
+                </div>
+                <div class="effects-info">
+                    <h2>Riesgo Vital</h2>
+                    <ul>
+                        <li>Inicio de estado de coma.</li>
+                        <li>Posible envenenamiento agudo.</li>
+                        <li>Muerte por paro respiratorio es probable.</li>
+                    </ul>
+                </div>
+            </article>
+        </main>
+        <div class="disclaimer">
+            <strong>Importante:</strong> La cantidad de bebidas es una <strong>estimación</strong> para un hombre promedio. El BAC real varía según peso, género y otros factores.
+        </div>
+    </div>
+
+</body>
+</html>
