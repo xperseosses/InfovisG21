@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Estático: Efectos del Alcohol en la Sangre</title>
+    <title>Efectos del Alcohol en la Sangre</title>
     <style>
         /* --- Estilos Generales --- */
         :root {
@@ -73,6 +73,7 @@
             border-right: 1px solid var(--color-borde);
             padding: 15px;
             text-align: center;
+            justify-content: flex-start; /* Alinea todo el contenido hacia arriba */
         }
         .bac-column:last-child {
             border-right: none;
@@ -81,7 +82,6 @@
             height: 12vw; /* Altura fija relativa al ancho de la pantalla */
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Centra el contenido (%, p, drinks) verticalmente */
         }
         .bac-info h3 {
             margin: 0 0 5px 0;
@@ -101,8 +101,11 @@
 
         .effects-info {
             margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1; /* Hace que esta sección ocupe el espacio vertical restante */
         }
-
+        
         .effects-info h2 {
             font-size: 1.2vw;
             margin: 0 0 10px 0;
@@ -111,12 +114,26 @@
         .effects-info ul {
             list-style: none;
             padding-left: 0;
-            text-align: left;
+            text-align: center; /* Alinea los puntos de la lista al centro */
             font-size: 0.85vw; /* Tamaño de fuente más pequeño para que quepa el texto */
         }
         
         .effects-info li {
             margin-bottom: 8px;
+        }
+
+        .state-drawing {
+            margin-top: auto; /* Empuja el dibujo al fondo para alinearlo */
+            padding-top: 10px;
+            height: 7vw; /* Altura fija para el contenedor del dibujo */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .state-drawing svg {
+            height: 100%; /* El dibujo ocupa toda la altura del contenedor */
+            width: auto;
         }
 
         /* --- Colores por Nivel de Riesgo (Borde Superior) --- */
@@ -130,7 +147,7 @@
 
     <div class="container">
         <header>
-            <h1>Dashboard Estático: Efectos del Alcohol en el Cuerpo por Nivel de BAC</h1>
+            <h1>Efectos en el cuerpo del Nivel de Alcohol en sangre (BAC)</h1>
         </header>
         
         <main>
@@ -148,6 +165,14 @@
                         <li>Alteración del humor ("subidón").</li>
                         <li>Leve deterioro del juicio.</li>
                     </ul>
+                    <div class="state-drawing">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="40" fill="none" stroke="#333" stroke-width="4"/>
+                            <path d="M35 45 Q 40 50, 45 45" stroke="#333" stroke-width="4" fill="none"/>
+                            <path d="M55 45 Q 60 50, 65 45" stroke="#333" stroke-width="4" fill="none"/>
+                            <path d="M35 65 Q 50 75, 65 65" stroke="#333" stroke-width="4" fill="none"/>
+                        </svg>
+                    </div>
                 </div>
             </article>
 
@@ -165,6 +190,16 @@
                         <li>Deterioro menor en razonamiento.</li>
                         <li>Emociones exageradas.</li>
                     </ul>
+                    <div class="state-drawing">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 80 Q 20 50, 30 70" stroke="#333" stroke-width="4" fill="none"/>
+                            <path d="M90 80 Q 80 50, 70 70" stroke="#333" stroke-width="4" fill="none"/>
+                            <circle cx="50" cy="50" r="40" fill="none" stroke="#333" stroke-width="4"/>
+                            <circle cx="35" cy="45" r="5" fill="#333"/>
+                            <circle cx="65" cy="45" r="5" fill="#333"/>
+                            <path d="M30 65 Q 50 80, 70 65" stroke="#333" stroke-width="4" fill="none"/>
+                        </svg>
+                    </div>
                 </div>
             </article>
             
@@ -182,6 +217,15 @@
                         <li>Juicio y autocontrol afectados.</li>
                         <li>Tiempo de reacción más lento.</li>
                     </ul>
+                    <div class="state-drawing">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="40" fill="none" stroke="#333" stroke-width="4"/>
+                            <circle cx="35" cy="45" r="5" fill="#333"/>
+                            <circle cx="65" cy="45" r="5" fill="#333"/>
+                            <path d="M35 70 Q 50 60, 65 70" stroke="#333" stroke-width="4" fill="none"/>
+                            <path d="M25 35 Q 35 30, 45 35" stroke="#333" stroke-width="4" fill="none"/>
+                        </svg>
+                    </div>
                 </div>
             </article>
             
@@ -192,13 +236,24 @@
                     <div class="drinks">🍺🍺🍺🍺|🥃</div>
                 </div>
                 <div class="effects-info">
-                    <h2>Deterioro Severo</h2>
+                    <h2>Legalmente Incapacitado</h2>
                     <ul>
                         <li>Efecto depresor pronunciado.</li>
                         <li>Deterioro motor grueso.</li>
                         <li>Juicio y percepción severamente afectados.</li>
                         <li>Pueden ocurrir vómitos.</li>
                     </ul>
+                    <div class="state-drawing">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 30 Q 25 20, 30 30" stroke="#333" stroke-width="3" fill="none"/>
+                            <circle cx="50" cy="50" r="40" fill="none" stroke="#333" stroke-width="4"/>
+                            <path d="M35 50 L 45 40" stroke="#333" stroke-width="4"/>
+                            <path d="M45 50 L 35 40" stroke="#333" stroke-width="4"/>
+                            <path d="M55 50 L 65 40" stroke="#333" stroke-width="4"/>
+                            <path d="M65 50 L 55 40" stroke="#333" stroke-width="4"/>
+                            <path d="M30 70 Q 50 75, 70 65" stroke="#333" stroke-width="4" fill="none"/>
+                        </svg>
+                    </div>
                 </div>
             </article>
             
@@ -209,12 +264,22 @@
                     <div class="drinks">🍺🍺🍺🍺🍺|🥃</div>
                 </div>
                 <div class="effects-info">
-                    <h2>Confusión</h2>
+                    <h2>Deterioro Grave</h2>
                     <ul>
                         <li>Fuerte estado de depresión y náuseas.</li>
                         <li>Visión borrosa y desorientación.</li>
                         <li>Posible pérdida de consciencia ("blackout").</li>
                     </ul>
+                    <div class="state-drawing">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="40" fill="none" stroke="#333" stroke-width="4"/>
+                            <path d="M30 45 Q 35 40, 40 45" stroke="#333" stroke-width="4" fill="none"/>
+                            <path d="M60 45 Q 65 40, 70 45" stroke="#333" stroke-width="4" fill="none"/>
+                            <path d="M35 65 Q 50 60, 65 65" stroke="#333" stroke-width="4" fill="none"/>
+                            <path d="M20 25 L 25 20 L 30 25" fill="none" stroke="#333" stroke-width="3" />
+                            <path d="M70 25 L 75 20 L 80 25" fill="none" stroke="#333" stroke-width="3" />
+                        </svg>
+                    </div>
                 </div>
             </article>
 
@@ -231,6 +296,15 @@
                         <li>Poca capacidad de comprensión.</li>
                         <li>Puede desmayarse súbitamente.</li>
                     </ul>
+                    <div class="state-drawing">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="40" fill="none" stroke="#333" stroke-width="4"/>
+                            <path d="M30 45 Q 35 50, 40 45" stroke="#333" stroke-width="4" fill="none"/>
+                            <path d="M60 45 Q 65 50, 70 45" stroke="#333" stroke-width="4" fill="none"/>
+                            <path d="M35 65 L 65 65" stroke="#333" stroke-width="4" fill="none"/>
+                            <text x="75" y="40" font-size="20" font-family="monospace">Zzz</text>
+                        </svg>
+                    </div>
                 </div>
             </article>
             
@@ -247,6 +321,11 @@
                         <li>Posible envenenamiento agudo.</li>
                         <li>Muerte por paro respiratorio es probable.</li>
                     </ul>
+                    <div class="state-drawing">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 50 L 30 50 L 35 40 L 45 60 L 50 50 L 90 50" fill="none" stroke="#000" stroke-width="5"/>
+                        </svg>
+                    </div>
                 </div>
             </article>
         </main>
