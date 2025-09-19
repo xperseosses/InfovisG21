@@ -124,23 +124,30 @@
 
         .state-drawing {
             margin-top: auto; /* Empuja el dibujo al fondo para alinearlo */
-            padding-top: 10px;
-            height: 7vw; /* Altura fija para el contenedor del dibujo */
+            padding-top: 20px;
+            height: 14vw; /* Altura fija para el contenedor del dibujo */
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
+        /* --- ESTA ES LA ÚNICA REGLA QUE SE AÑADIÓ --- */
+        .state-drawing img {
+            max-height: 300%; /* Asegura que la imagen no sea más alta que su contenedor */
+            max-width: 100%;  /* Asegura que la imagen no sea más ancha que su contenedor */
+        }
+        /* --- FIN DE LA MODIFICACIÓN --- */
+
         .state-drawing svg {
             height: 100%; /* El dibujo ocupa toda la altura del contenedor */
-            width: auto;
+            width: 100%;
         }
 
         /* --- Colores por Nivel de Riesgo (Borde Superior) --- */
-        #col-1, #col-2 { border-top: 8px solid var(--riesgo-bajo); }
-        #col-3, #col-4 { border-top: 8px solid var(--riesgo-moderado); }
-        #col-5, #col-6 { border-top: 8px solid var(--riesgo-alto); }
-        #col-7 { border-top: 8px solid var(--riesgo-peligro); }
+        #col-1, #col-2 { border-top: 25px solid var(--riesgo-bajo); }
+        #col-3, #col-4 { border-top: 25px solid var(--riesgo-moderado); }
+        #col-5, #col-6 { border-top: 25px solid var(--riesgo-alto); }
+        #col-7 { border-top: 25px solid var(--riesgo-peligro); }
     </style>
 </head>
 <body>
@@ -166,12 +173,7 @@
                         <li>Leve deterioro del juicio.</li>
                     </ul>
                     <div class="state-drawing">
-                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="50" cy="50" r="40" fill="none" stroke="#333" stroke-width="4"/>
-                            <path d="M35 45 Q 40 50, 45 45" stroke="#333" stroke-width="4" fill="none"/>
-                            <path d="M55 45 Q 60 50, 65 45" stroke="#333" stroke-width="4" fill="none"/>
-                            <path d="M35 65 Q 50 75, 65 65" stroke="#333" stroke-width="4" fill="none"/>
-                        </svg>
+                        <img src="imagenes/relajacion_inicial.png" alt="Ilustración de relajacion inicial">
                     </div>
                 </div>
             </article>
@@ -191,14 +193,7 @@
                         <li>Emociones exageradas.</li>
                     </ul>
                     <div class="state-drawing">
-                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M10 80 Q 20 50, 30 70" stroke="#333" stroke-width="4" fill="none"/>
-                            <path d="M90 80 Q 80 50, 70 70" stroke="#333" stroke-width="4" fill="none"/>
-                            <circle cx="50" cy="50" r="40" fill="none" stroke="#333" stroke-width="4"/>
-                            <circle cx="35" cy="45" r="5" fill="#333"/>
-                            <circle cx="65" cy="45" r="5" fill="#333"/>
-                            <path d="M30 65 Q 50 80, 70 65" stroke="#333" stroke-width="4" fill="none"/>
-                        </svg>
+                        <img src="imagenes/euforia.png" alt="Ilustración de euforia">
                     </div>
                 </div>
             </article>
@@ -218,13 +213,7 @@
                         <li>Tiempo de reacción más lento.</li>
                     </ul>
                     <div class="state-drawing">
-                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="50" cy="50" r="40" fill="none" stroke="#333" stroke-width="4"/>
-                            <circle cx="35" cy="45" r="5" fill="#333"/>
-                            <circle cx="65" cy="45" r="5" fill="#333"/>
-                            <path d="M35 70 Q 50 60, 65 70" stroke="#333" stroke-width="4" fill="none"/>
-                            <path d="M25 35 Q 35 30, 45 35" stroke="#333" stroke-width="4" fill="none"/>
-                        </svg>
+                        <img src="imagenes/deterioro_evidente.png" alt="Ilustración de deterioro evidente">
                     </div>
                 </div>
             </article>
@@ -244,23 +233,15 @@
                         <li>Pueden ocurrir vómitos.</li>
                     </ul>
                     <div class="state-drawing">
-                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M20 30 Q 25 20, 30 30" stroke="#333" stroke-width="3" fill="none"/>
-                            <circle cx="50" cy="50" r="40" fill="none" stroke="#333" stroke-width="4"/>
-                            <path d="M35 50 L 45 40" stroke="#333" stroke-width="4"/>
-                            <path d="M45 50 L 35 40" stroke="#333" stroke-width="4"/>
-                            <path d="M55 50 L 65 40" stroke="#333" stroke-width="4"/>
-                            <path d="M65 50 L 55 40" stroke="#333" stroke-width="4"/>
-                            <path d="M30 70 Q 50 75, 70 65" stroke="#333" stroke-width="4" fill="none"/>
-                        </svg>
+                        <img src="imagenes/legalmente_incapacitado.png" alt="Ilustración de legalmente incapacitado">
                     </div>
                 </div>
             </article>
             
             <article class="bac-column" id="col-5">
                 <div class="bac-info">
-                    <h3>0.16% - 0.24%</h3>
-                    <p>Aprox. 5-7 bebidas</p>
+                    <h3>0.16% - 0.30%</h3>
+                    <p>Aprox. 5-8+ bebidas</p>
                     <div class="drinks">🍺🍺🍺🍺🍺|🥃</div>
                 </div>
                 <div class="effects-info">
@@ -269,41 +250,12 @@
                         <li>Fuerte estado de depresión y náuseas.</li>
                         <li>Visión borrosa y desorientación.</li>
                         <li>Posible pérdida de consciencia ("blackout").</li>
-                    </ul>
-                    <div class="state-drawing">
-                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="50" cy="50" r="40" fill="none" stroke="#333" stroke-width="4"/>
-                            <path d="M30 45 Q 35 40, 40 45" stroke="#333" stroke-width="4" fill="none"/>
-                            <path d="M60 45 Q 65 40, 70 45" stroke="#333" stroke-width="4" fill="none"/>
-                            <path d="M35 65 Q 50 60, 65 65" stroke="#333" stroke-width="4" fill="none"/>
-                            <path d="M20 25 L 25 20 L 30 25" fill="none" stroke="#333" stroke-width="3" />
-                            <path d="M70 25 L 75 20 L 80 25" fill="none" stroke="#333" stroke-width="3" />
-                        </svg>
-                    </div>
-                </div>
-            </article>
-
-            <article class="bac-column" id="col-6">
-                <div class="bac-info">
-                    <h3>0.25% - 0.30%</h3>
-                    <p>Aprox. 7-8+ bebidas</p>
-                    <div class="drinks">🍺🍺🍺🍺🍺🍺|🥃🥃</div>
-                </div>
-                <div class="effects-info">
-                    <h2>Estupor</h2>
-                    <ul>
                         <li>Funciones mentales y físicas severamente deterioradas.</li>
                         <li>Poca capacidad de comprensión.</li>
                         <li>Puede desmayarse súbitamente.</li>
                     </ul>
                     <div class="state-drawing">
-                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="50" cy="50" r="40" fill="none" stroke="#333" stroke-width="4"/>
-                            <path d="M30 45 Q 35 50, 40 45" stroke="#333" stroke-width="4" fill="none"/>
-                            <path d="M60 45 Q 65 50, 70 45" stroke="#333" stroke-width="4" fill="none"/>
-                            <path d="M35 65 L 65 65" stroke="#333" stroke-width="4" fill="none"/>
-                            <text x="75" y="40" font-size="20" font-family="monospace">Zzz</text>
-                        </svg>
+                        <img src="imagenes/deterioro_grave.png" alt="Ilustración de deterioro grave">
                     </div>
                 </div>
             </article>
@@ -322,9 +274,7 @@
                         <li>Muerte por paro respiratorio es probable.</li>
                     </ul>
                     <div class="state-drawing">
-                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M10 50 L 30 50 L 35 40 L 45 60 L 50 50 L 90 50" fill="none" stroke="#000" stroke-width="5"/>
-                        </svg>
+                        <img src="imagenes/riesgo_vital.png" alt="Ilustración de riesgo vital">
                     </div>
                 </div>
             </article>
