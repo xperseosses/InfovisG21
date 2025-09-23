@@ -45,17 +45,14 @@
 
         /* 1. Se añade la nueva barra de gradiente con colores más acentuados */
         .bac-gradient-bar {
-            height: 25px; /* Altura de la barra */
+            height: 30px;
             width: 100%;
-            /* Gradiente con colores más intensos y definidos para marcar el riesgo */
+            border-radius: 5px;
+            /* Gradiente que va de bienestar (verde) a malestar (negro) */
             background: linear-gradient(to right, 
-                #ffc94d 0%,     /* Amarillo (Relajación) */
-                #ff9a52 17%,    /* Naranja (Euforia) */
-                #ff6f59 34%,    /* Naranja rojizo (Deterioro) */
-                #e74c3c 51%,    /* Rojo (Incapacitado) */
-                #c0392b 68%,    /* Rojo oscuro (Grave) */
-                #2c3e50 85%,    /* Gris muy oscuro/casi negro (Riesgo Vital) */
-                #000000 100%
+                #2ecc71, /* Verde (Bienestar) */
+                #f1c40f, /* Amarillo (Advertencia) */
+                #000000  /* Negro (Malestar Severo) */
             );
         }
 
@@ -156,16 +153,6 @@
             width: 100%;
         }
 
-        /* --- INICIO DE LA MODIFICACIÓN --- */
-        
-        /* 2. Se eliminan los bordes superiores de las columnas */
-        /* #col-1, #col-2 { border-top: 25px solid var(--riesgo-bajo); }
-         #col-3, #col-4 { border-top: 25px solid var(--riesgo-moderado); }
-         #col-5, #col-6 { border-top: 25px solid var(--riesgo-alto); }
-         #col-7 { border-top: 25px solid var(--riesgo-peligro); }
-        */
-
-        /* --- FIN DE LA MODIFICACIÓN --- */
     </style>
 </head>
 <body>
@@ -177,11 +164,31 @@
 
         <div class="bac-gradient-bar"></div>
         <main>
+            <article class="bac-column" id="col-0">
+                <div class="bac-info">
+                    <h3>0%</h3>
+                    <p>Aprox. 1-2 bebidas</p>
+                    <div class="drinks">🫙</div>
+                </div>
+                <div class="effects-info">
+                    <h2>Sobrio</h2>
+                    <ul>
+                        <li>Sensación de mareo leve.</li>
+                        <li>Estado de relajación y calidez.</li>
+                        <li>Alteración del humor ("subidón").</li>
+                        <li>Leve deterioro del juicio.</li>
+                    </ul>
+                    <div class="state-drawing">
+                        <img src="imagenes/relajacion_inicial.png" alt="Ilustración de relajacion inicial">
+                    </div>
+                </div>
+            </article>
+
             <article class="bac-column" id="col-1">
                 <div class="bac-info">
-                    <h3>0.02% - 0.04%</h3>
+                    <h3>0.03%</h3>
                     <p>Aprox. 1-2 bebidas</p>
-                    <div class="drinks">🍺 | 🍷</div>
+                    <div class="drinks">🍺</div>
                 </div>
                 <div class="effects-info">
                     <h2>Relajación Inicial</h2>
@@ -199,9 +206,9 @@
 
             <article class="bac-column" id="col-2">
                 <div class="bac-info">
-                    <h3>0.05% - 0.07%</h3>
+                    <h3>0.06%</h3>
                     <p>Aprox. 2-3 bebidas</p>
-                    <div class="drinks">🍺🍺 | 🍷</div>
+                    <div class="drinks">🍺🍺</div>
                 </div>
                 <div class="effects-info">
                     <h2>Euforia</h2>
@@ -219,9 +226,9 @@
             
             <article class="bac-column" id="col-3">
                 <div class="bac-info">
-                    <h3>0.08% - 0.10%</h3>
+                    <h3>0.09%</h3>
                     <p>Aprox. 3-4 bebidas</p>
-                    <div class="drinks">🍺🍺🍺 | 🥃</div>
+                    <div class="drinks">🍺🍺🍺</div>
                 </div>
                 <div class="effects-info">
                     <h2>Deterioro Evidente</h2>
@@ -239,9 +246,9 @@
             
             <article class="bac-column" id="col-4">
                 <div class="bac-info">
-                    <h3>0.11% - 0.15%</h3>
+                    <h3>0.13%</h3>
                     <p>Aprox. 4-5 bebidas</p>
-                    <div class="drinks">🍺🍺🍺🍺|🥃</div>
+                    <div class="drinks">🍺🍺🍺🍺</div>
                 </div>
                 <div class="effects-info">
                     <h2>Legalmente Incapacitado</h2>
@@ -259,9 +266,9 @@
             
             <article class="bac-column" id="col-5">
                 <div class="bac-info">
-                    <h3>0.16% - 0.30%</h3>
+                    <h3>0.26%</h3>
                     <p>Aprox. 5-8+ bebidas</p>
-                    <div class="drinks">🍺🍺🍺🍺🍺|🥃</div>
+                    <div class="drinks">🍺🍺🍺🍺🍺</div>
                 </div>
                 <div class="effects-info">
                     <h2>Deterioro Grave</h2>
