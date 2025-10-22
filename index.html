@@ -261,19 +261,19 @@
         // Usaremos una simplificación: Normal -> Acelerado -> Irregular/Lento
         const statesData = [
             { title: "Sobrio (0%)", video: "videos/estado_0.mp4", description: "Estado normal.",
-              bpm: 70, irregularity: 0,    pitchDecay: 0.05, octaves: 4, velocity: 0.8 }, // Normal
-            { title: "Relajación Inicial (0.03%)", video: "videos/estado_1.0.mp4", description: "Ligero mareo.",
-              bpm: 80, irregularity: 0,    pitchDecay: 0.05, octaves: 4, velocity: 0.8 }, // Ligeramente elevado
-            { title: "Euforia (0.06%)", video: "videos/estado_2.0.mp4", description: "Desinhibición.",
-              bpm: 90, irregularity: 0,    pitchDecay: 0.06, octaves: 4, velocity: 0.85 }, // Más elevado, un poco más resonante
+              bpm: 70, irregularity: 0,    velocity: 0.8,  lubNote: 'C2', dubNote: 'G2', filterFreq: 600 },
+            { title: "Relajación Inicial (0.03%)", video: "videos/estado_1.mp4", description: "Ligero mareo.",
+              bpm: 80, irregularity: 0,    velocity: 0.8,  lubNote: 'C2', dubNote: 'G2', filterFreq: 600 },
+            { title: "Euforia (0.06%)", video: "videos/estado_2.mp4", description: "Desinhibición.",
+              bpm: 90, irregularity: 0,    velocity: 0.85, lubNote: 'C#2', dubNote: 'G#2', filterFreq: 650 }, // Ligeramente más brillante
             { title: "Deterioro Leve (0.09%)", video: "videos/estado_3.mp4", description: " descoordinación.",
-              bpm: 100, irregularity: 0.0005, pitchDecay: 0.07, octaves: 3.8, velocity: 0.85 }, // Rápido, leve irregularidad, timbre cambia
+              bpm: 100, irregularity: 0.0, velocity: 0.85, lubNote: 'D2', dubNote: 'A2', filterFreq: 700 }, // Aún más brillante/tenso
             { title: "Incapacidad (0.12%)", video: "videos/estado_4.mp4", description: "Deterioro motor severo.",
-              bpm: 80, irregularity: 0.00075, pitchDecay: 0.08, octaves: 3.5, velocity: 0.8 }, // Rápido, más irregular, más apagado
+              bpm: 110, irregularity: 0.0, velocity: 0.8,  lubNote: 'D2', dubNote: 'A2', filterFreq: 650 }, // Rápido pero empieza a apagarse
             { title: "Deterioro Grave (0.26%)", video: "videos/estado_5.mp4", description: "Pérdida de consciencia.",
-              bpm: 60, irregularity: 0.001,  pitchDecay: 0.1, octaves: 3, velocity: 0.75 }, // Lento, irregular, apagado y más bajo
+              bpm: 60, irregularity: 0.0,  velocity: 0.75, lubNote: 'B1', dubNote: 'F#2', filterFreq: 500 }, // Más grave y apagado
             { title: "Riesgo Vital (0.31%+)", video: "videos/estado_6.mp4", description: "Coma, paro respiratorio.",
-              bpm: 40, irregularity: 0.0015, pitchDecay: 0.12, octaves: 2.5, velocity: 0.7 }  // Muy lento, muy irregular, muy apagado y bajo
+              bpm: 40, irregularity: 0.0,  velocity: 0.7,  lubNote: 'A1', dubNote: 'E2', filterFreq: 400 }  // Muy grave y apagado
         ];
 
         // --- Lógica para la Modal (Sin cambios) ---
@@ -307,34 +307,42 @@
         modal.addEventListener('click', (event) => { if (event.target === modal) { closeModal(); } });
         window.addEventListener('keydown', (event) => { if (event.key === 'Escape' && modal.style.display === 'flex') { closeModal(); } });
         modalVideo.addEventListener('ended', closeModal);
-        // --- Lógica de Sonificación con Tone.js ---
-        let synth; // El instrumento para el 'bip'
-        let loop;  // El loop que controla el ritmo
+// --- Lógica de Sonificación con Tone.js ---
+        let lubSynth, dubSynth; // Dos synths para Lub-Dub
+        let lowPassFilter;    // Filtro para suavizar
+        let loop;             // El loop que controla el ritmo general (BPM)
 
-        // Función para inicializar el sintetizador (se llama una vez al primer hover)
+// Función para inicializar los componentes de audio
         function initializeAudio() {
-            if (!synth) {
-                // Usar un synth simple para el 'bip'
-                synth = new Tone.MembraneSynth({
-                    octaves: 4,
-                    pitchDecay: 0.1,
-                    envelope: {
-                        attack: 0.001,
-                        decay: 0.2,
-                        sustain: 0.01,
-                        release: 0.1,
-                        attackCurve: 'exponential'
-                    }
+            if (!lubSynth) {
+                // Synth para "Lub"
+                lubSynth = new Tone.Synth({
+                    oscillator: { type: 'sine' },
+                    envelope: { attack: 0.01, decay: 0.15, sustain: 0.05, release: 0.2 }
+                });
+
+                // Synth para "Dub"
+                dubSynth = new Tone.Synth({
+                    oscillator: { type: 'sine' },
+                    envelope: { attack: 0.005, decay: 0.08, sustain: 0.02, release: 0.1 }
+                });
+
+                // Filtro Pasa-Bajos (Frecuencia se ajustará dinámicamente)
+                lowPassFilter = new Tone.Filter({
+                    type: 'lowpass',
+                    // frequency: 600, // No se fija aquí
+                    Q: 1
                 }).toDestination();
+
+                // Conectar synths AL FILTRO
+                lubSynth.connect(lowPassFilter);
+                dubSynth.connect(lowPassFilter);
             }
         }
 
-        // Función para iniciar el latido con BPM e irregularidad específicos
-        // Función para iniciar el latido con parámetros específicos
-        // Función para iniciar el latido con parámetros específicos
-        // Función para iniciar el latido con parámetros específicos
+// Función para iniciar el latido Lub-Dub con timbre y volumen variable
         function startHeartbeat(stateIndex) {
-            initializeAudio(); // Asegura que el synth esté listo
+            initializeAudio();
 
             if (stateIndex < 0 || stateIndex >= statesData.length) {
                 console.error("Índice de estado inválido:", stateIndex);
@@ -342,68 +350,65 @@
             }
             const data = statesData[stateIndex];
             const bpm = data.bpm;
-            const irregularity = data.irregularity;
-            const pitchDecay = data.pitchDecay;
-            const octaves = data.octaves;
-            const velocity = data.velocity;
-
+            const irregularity = data.irregularity || 0;
+            const velocity = data.velocity; // Volumen general
+            const lubNote = data.lubNote;
+            const dubNote = data.dubNote;
+            const filterFreq = data.filterFreq; // Frecuencia del filtro
 
             // Detiene cualquier loop anterior
             if (loop) {
                 loop.stop(0);
-                loop.dispose(); // Limpia el loop anterior
+                loop.dispose();
             }
 
-             // Aplicar cambios de TIMBRE al synth ANTES de iniciar el loop
-            synth.set({
-                pitchDecay: pitchDecay,
-                octaves: octaves
-            });
+            // *** AJUSTAR FRECUENCIA DEL FILTRO ***
+            // Usamos 'rampTo' para una transición suave si el usuario mueve rápido el cursor
+            lowPassFilter.frequency.rampTo(filterFreq, 0.1); // Transición en 0.1 segundos
 
-            // Calcula el intervalo base en segundos (60 / BPM)
+            // Intervalo base y delay Lub-Dub
             const baseInterval = 60 / bpm;
+            const lubDubDelay = 0.15; // Puedes mantenerlo fijo o hacerlo variable también
 
-            // Máxima variación permitida
+            // Máxima variación permitida y límite mínimo
             const maxDeviation = baseInterval * irregularity;
+            const minAllowedInterval = baseInterval * 0.90; // Mantenemos límite estricto
 
             // Crea un nuevo loop
             loop = new Tone.Loop(time => {
-                // Calcula una desviación aleatoria DENTRO del rango permitido
+                // Cálculo de intervalo con irregularidad y límite
                 const deviation = (Math.random() * 2 - 1) * maxDeviation;
                 let currentInterval = baseInterval + deviation;
-
-                // *** AJUSTE 1: Limitar MÁS el intervalo mínimo ***
-                // Probemos con un 85% del intervalo base como mínimo.
-                // Si aún se satura, puedes probar con 0.90 o incluso más alto.
-                const minAllowedInterval = baseInterval * 0.85; // Antes era 0.70
                 if (currentInterval < minAllowedInterval) {
                     currentInterval = minAllowedInterval;
                 }
 
-                // *** AJUSTE 2: Acortar la duración del sonido ***
-                // Cambiamos '8n' (corchea) a '16n' (semicorchea).
-                // Esto da más tiempo entre sonidos para evitar solapamientos.
-                synth.triggerAttackRelease('C2', '16n', time, velocity); // Antes era '8n'
+                // *** Programar Lub y Dub con NOTAS y VELOCITY variables ***
+                // Lub:
+                lubSynth.triggerAttackRelease(lubNote, '8n', time, velocity * 0.9); // Usa la nota y velocity del estado
 
-                // Ajusta la duración del próximo ciclo del loop dinámicamente
+                // Dub:
+                dubSynth.triggerAttackRelease(dubNote, '16n', time + lubDubDelay, velocity); // Usa la nota y velocity del estado
+
+                // Ajusta la duración del PRÓXIMO ciclo del loop
                 loop.interval = currentInterval;
 
-            }, baseInterval); // Inicia con el intervalo base
+            }, baseInterval);
 
-            // Sincroniza con el transporte de Tone.js y empieza
+            // Iniciar transporte y loop
             Tone.Transport.start();
             loop.start(0);
         }
 
-        // Función para detener el latido
+        // Función stopHeartbeat (sin cambios necesarios respecto a la versión anterior)
         function stopHeartbeat() {
             if (loop) {
                 loop.stop(0);
                 loop.dispose();
-                loop = null; // Resetea la variable loop
+                loop = null;
             }
-            // Opcional: Detener el transporte si no hay más sonidos planeados
-            // Tone.Transport.stop();
+            if(lubSynth) lubSynth.triggerRelease(Tone.now());
+            if(dubSynth) dubSynth.triggerRelease(Tone.now());
         }
 
         // --- Asignación de Eventos (Hover y Clic) ---
