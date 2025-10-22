@@ -203,13 +203,13 @@
                 <div><span class="click-indicator">▶️</span><div class="click-indicator-text">Ver video</div></div>
             </article>
             <article class="bac-column" id="col-1" data-state-index="1">
-                 <div class="state-drawing"><img src="imagenes/relajacion_inicial.png" alt="Ilustración de relajación inicial"></div>
+                 <div class="state-drawing"><img src="imagenes/relajacion_inicial2.png" alt="Ilustración de relajación inicial"></div>
                 <div class="bac-info"><h3>0.03%</h3><div class="drinks">🍺</div></div>
                 <div class="effects-info"><h2>Relajación Inicial</h2><ul><li>Mareo leve.</li><li>Estado de relajación.</li><li>Alteración del humor.</li></ul></div>
                  <div><span class="click-indicator">▶️</span><div class="click-indicator-text">Ver video</div></div>
             </article>
             <article class="bac-column" id="col-2" data-state-index="2">
-                 <div class="state-drawing"><img src="imagenes/euforia.png" alt="Ilustración de euforia"></div>
+                 <div class="state-drawing"><img src="imagenes/euforia2.png" alt="Ilustración de euforia"></div>
                 <div class="bac-info"><h3>0.06%</h3><div class="drinks">🍺🍺</div></div>
                 <div class="effects-info"><h2>Euforia</h2><ul><li>Júbilo y desinhibición.</li><li>Leve deterioro del razonamiento.</li></ul></div>
                  <div><span class="click-indicator">▶️</span><div class="click-indicator-text">Ver video</div></div>
@@ -239,8 +239,8 @@
             </article>
         </main>
         <div class="disclaimer">
-            <strong>Importante:</strong> La cantidad de bebidas es una <strong>estimación</strong> para un hombre promedio. El nivel de alcohol en sangre real varía según peso, género, metabolismo y otros factores. Esta visualización es educativa y no reemplaza el consejo médico profesional. <br>
-            <span style="font-size: 0.9em;">Fuentes generales sobre BAC y efectos: [Cita aquí tu fuente]</span> </div>
+            <strong>Importante:</strong> La cantidad de bebidas es una <strong>estimación</strong> para un hombre promedio. El nivel de alcohol en sangre real varía según peso, género, metabolismo y otros factores.<br>
+            
     </div>
 
     <div id="videoModal" class="modal"> <div class="modal-content">
@@ -260,13 +260,20 @@
         // pero en niveles muy altos/tóxicos puede deprimir funciones, incluyendo cardíacas.
         // Usaremos una simplificación: Normal -> Acelerado -> Irregular/Lento
         const statesData = [
-            { title: "Sobrio (0%)", video: "videos/estado_0.mp4", description: "Estado normal.", bpm: 70, irregularity: 0 }, // Normal
-            { title: "Relajación Inicial (0.03%)", video: "videos/estado_1.mp4", description: "Ligero mareo.", bpm: 80, irregularity: 0 }, // Ligeramente elevado
-            { title: "Euforia (0.06%)", video: "videos/estado_2.mp4", description: "Desinhibición.", bpm: 90, irregularity: 0 }, // Más elevado
-            { title: "Deterioro Leve (0.09%)", video: "videos/estado_3.mp4", description: " descoordinación.", bpm: 100, irregularity: 0 }, // Rápido, algo irregular
-            { title: "Incapacidad (0.12%)", video: "videos/estado_4.mp4", description: "Deterioro motor severo.", bpm: 110, irregularity: 0 }, // Rápido e irregular
-            { title: "Deterioro Grave (0.26%)", video: "videos/estado_5.mp4", description: "Pérdida de consciencia.", bpm: 60, irregularity: 0 }, // Lento y muy irregular
-            { title: "Riesgo Vital (0.31%+)", video: "videos/estado_6.mp4", description: "Coma, paro respiratorio.", bpm: 40, irregularity: 0 } // Muy lento y muy irregular
+            { title: "Sobrio (0%)", video: "videos/estado_0.mp4", description: "Estado normal.",
+              bpm: 70, irregularity: 0,    pitchDecay: 0.05, octaves: 4, velocity: 0.8 }, // Normal
+            { title: "Relajación Inicial (0.03%)", video: "videos/estado_1.0.mp4", description: "Ligero mareo.",
+              bpm: 80, irregularity: 0,    pitchDecay: 0.05, octaves: 4, velocity: 0.8 }, // Ligeramente elevado
+            { title: "Euforia (0.06%)", video: "videos/estado_2.0.mp4", description: "Desinhibición.",
+              bpm: 90, irregularity: 0,    pitchDecay: 0.06, octaves: 4, velocity: 0.85 }, // Más elevado, un poco más resonante
+            { title: "Deterioro Leve (0.09%)", video: "videos/estado_3.mp4", description: " descoordinación.",
+              bpm: 100, irregularity: 0.0005, pitchDecay: 0.07, octaves: 3.8, velocity: 0.85 }, // Rápido, leve irregularidad, timbre cambia
+            { title: "Incapacidad (0.12%)", video: "videos/estado_4.mp4", description: "Deterioro motor severo.",
+              bpm: 80, irregularity: 0.00075, pitchDecay: 0.08, octaves: 3.5, velocity: 0.8 }, // Rápido, más irregular, más apagado
+            { title: "Deterioro Grave (0.26%)", video: "videos/estado_5.mp4", description: "Pérdida de consciencia.",
+              bpm: 60, irregularity: 0.001,  pitchDecay: 0.1, octaves: 3, velocity: 0.75 }, // Lento, irregular, apagado y más bajo
+            { title: "Riesgo Vital (0.31%+)", video: "videos/estado_6.mp4", description: "Coma, paro respiratorio.",
+              bpm: 40, irregularity: 0.0015, pitchDecay: 0.12, octaves: 2.5, velocity: 0.7 }  // Muy lento, muy irregular, muy apagado y bajo
         ];
 
         // --- Lógica para la Modal (Sin cambios) ---
@@ -299,7 +306,7 @@
         closeButton.addEventListener('click', closeModal);
         modal.addEventListener('click', (event) => { if (event.target === modal) { closeModal(); } });
         window.addEventListener('keydown', (event) => { if (event.key === 'Escape' && modal.style.display === 'flex') { closeModal(); } });
-
+        modalVideo.addEventListener('ended', closeModal);
         // --- Lógica de Sonificación con Tone.js ---
         let synth; // El instrumento para el 'bip'
         let loop;  // El loop que controla el ritmo
@@ -323,8 +330,23 @@
         }
 
         // Función para iniciar el latido con BPM e irregularidad específicos
-        function startHeartbeat(bpm, irregularity = 0) {
+        // Función para iniciar el latido con parámetros específicos
+        // Función para iniciar el latido con parámetros específicos
+        // Función para iniciar el latido con parámetros específicos
+        function startHeartbeat(stateIndex) {
             initializeAudio(); // Asegura que el synth esté listo
+
+            if (stateIndex < 0 || stateIndex >= statesData.length) {
+                console.error("Índice de estado inválido:", stateIndex);
+                return;
+            }
+            const data = statesData[stateIndex];
+            const bpm = data.bpm;
+            const irregularity = data.irregularity;
+            const pitchDecay = data.pitchDecay;
+            const octaves = data.octaves;
+            const velocity = data.velocity;
+
 
             // Detiene cualquier loop anterior
             if (loop) {
@@ -332,19 +354,36 @@
                 loop.dispose(); // Limpia el loop anterior
             }
 
+             // Aplicar cambios de TIMBRE al synth ANTES de iniciar el loop
+            synth.set({
+                pitchDecay: pitchDecay,
+                octaves: octaves
+            });
+
             // Calcula el intervalo base en segundos (60 / BPM)
             const baseInterval = 60 / bpm;
 
+            // Máxima variación permitida
+            const maxDeviation = baseInterval * irregularity;
+
             // Crea un nuevo loop
             loop = new Tone.Loop(time => {
-                // Calcula una variación aleatoria basada en la irregularidad
-                // Math.random() da entre 0 y 1. Lo centramos en 0 y escalamos.
-                const randomFactor = (Math.random() - 0.5) * 2 * irregularity; // Rango: -irregularity a +irregularity
-                const currentInterval = baseInterval * (1 + randomFactor);
+                // Calcula una desviación aleatoria DENTRO del rango permitido
+                const deviation = (Math.random() * 2 - 1) * maxDeviation;
+                let currentInterval = baseInterval + deviation;
 
-                // Toca el sonido 'bip'
-                // Usamos 'C2' como nota base, ajusta si quieres otro sonido
-                synth.triggerAttackRelease('C2', '8n', time);
+                // *** AJUSTE 1: Limitar MÁS el intervalo mínimo ***
+                // Probemos con un 85% del intervalo base como mínimo.
+                // Si aún se satura, puedes probar con 0.90 o incluso más alto.
+                const minAllowedInterval = baseInterval * 0.85; // Antes era 0.70
+                if (currentInterval < minAllowedInterval) {
+                    currentInterval = minAllowedInterval;
+                }
+
+                // *** AJUSTE 2: Acortar la duración del sonido ***
+                // Cambiamos '8n' (corchea) a '16n' (semicorchea).
+                // Esto da más tiempo entre sonidos para evitar solapamientos.
+                synth.triggerAttackRelease('C2', '16n', time, velocity); // Antes era '8n'
 
                 // Ajusta la duración del próximo ciclo del loop dinámicamente
                 loop.interval = currentInterval;
@@ -374,10 +413,8 @@
                 // Inicia el contexto de audio en interacción del usuario (importante!)
                 await Tone.start();
                 const stateIndex = parseInt(column.getAttribute('data-state-index'));
-                if (stateIndex >= 0 && stateIndex < statesData.length) {
-                    const data = statesData[stateIndex];
-                    startHeartbeat(data.bpm, data.irregularity);
-                }
+                // Llama a startHeartbeat solo con el índice
+                startHeartbeat(stateIndex);
             });
 
             // Evento para detener el sonido al salir (mouseleave)
