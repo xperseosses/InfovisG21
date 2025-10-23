@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Efectos del Alcohol en la Sangre - Interactivo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <style>
         /* --- Estilos Generales (Tu código original) --- */
         :root {
@@ -31,7 +32,7 @@
         header {
             background-color: #343a40;
             color: white;
-            padding: 10px 20px;
+            padding: 3px 20px;
             text-align: center;
             flex-shrink: 0; /* Añadido para consistencia */
         }
@@ -41,7 +42,7 @@
         .bac-gradient-bar {
             height: 30px;
             width: 100%;
-            /*border-radius: 5px; /* Mantienes tu borde redondeado */
+            /*border-radius: 5px; /* Comentado como en tu última versión */
             flex-shrink: 0;
             background: linear-gradient(to right,
                 #2ecc71, /* Verde (Bienestar) */
@@ -58,16 +59,25 @@
             text-align: center;
             flex-shrink: 0;
         }
-        /* Instrucción de Interacción */
+        /* Instrucción de Interacción / Propósito */
         .interaction-instruction {
             text-align: center;
-            padding: 10px;
+            padding: 5px; /* Aumentado padding */
             font-style: italic;
-            color: #555;
-            background-color: #e9ecef;
+            color: #0c5460; /* Color más legible */
+            background-color: #d1ecf1; /* Fondo azul claro distintivo */
             flex-shrink: 0;
-            font-size: 0.9em;
+            font-size: 0.95em; /* Ligeramente más grande */
+            line-height: 1.5; /* Mejor espaciado */
+            border-bottom: 1px solid #bee5eb; /* Borde sutil */
         }
+        .headphone-recommendation { /* Estilo específico para audífonos */
+             color: #dc3545; /* Rojo para destacar */
+             font-weight: bold;
+             display: block; /* Asegura línea nueva */
+             margin-top: 5px;
+        }
+
 
         /* --- Contenido Principal (Tu código original) --- */
         main {
@@ -109,7 +119,7 @@
             min-height: 80px;
         }
         .bac-info h3 { margin: 0 0 5px 0; font-size: 1.5vw; }
-        .bac-info p { margin: 0; font-size: 1vw; color: #6c757d; }
+        .bac-info p { margin: 0; font-size: 1vw; color: #6c757d; } /* Este estilo no parece usarse */
         .bac-info .drinks { font-size: 2.5vw; margin: 5px 0; }
 
         .effects-info {
@@ -127,7 +137,7 @@
 
         .state-drawing {
             /* margin-top: auto; Se quita para usar flex-grow en effects-info */
-            padding-top: 10px; /* Añadido espacio arriba */
+            padding-top: 0px; /* Añadido espacio arriba */
             height: 14vw; /* Altura original relativa */
              /* Añadir min/max height */
             min-height: 100px;
@@ -138,9 +148,6 @@
             width: 100%; /* Asegura que la imagen se centre */
         }
         .state-drawing img { max-height: 100%; max-width: 100%; object-fit: contain; }
-        /* .state-drawing svg (Lo comento por si no lo usas, si sí, descomenta)
-        .state-drawing svg { height: 100%; width: 100%; }
-        */
 
         /* Indicador visual de clic (Añadido) */
         .click-indicator { font-size: 1.8em; color: rgba(0, 0, 0, 0.4); display: block; }
@@ -149,7 +156,10 @@
         /* --- Estilos Modal (Añadidos) --- */
         .modal {
             display: none; /* *** CRUCIAL: Empieza oculto *** */
-            position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7); justify-content: center; align-items: center;
+            position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7);
+            /* Cambiado display a flex para usarlo en JS para mostrar/centrar */
+            /* display: flex; */ /* Se maneja con JS */
+            justify-content: center; align-items: center;
         }
         .modal-content { background-color: #fefefe; margin: auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 700px; text-align: center; border-radius: 8px; position: relative; }
         .close-button { color: #aaa; position: absolute; top: 10px; right: 20px; font-size: 28px; font-weight: bold; cursor: pointer; }
@@ -164,7 +174,7 @@
             /* Ajustar tamaños relativos a vw/vh o usar valores fijos para móvil */
              .bac-info, .state-drawing { height: auto; /* Altura automática en móvil */ min-height: unset;}
              .bac-info h3 { font-size: 1.2em; }
-             .bac-info p { font-size: 0.9em; }
+             /* .bac-info p { font-size: 0.9em; } */ /* Comentado si no se usa */
              .bac-info .drinks { font-size: 2em; }
              .effects-info h2 { font-size: 1.1em; }
              .effects-info ul { font-size: 0.9em; }
@@ -172,28 +182,39 @@
              .click-indicator { font-size: 1.5em; }
              .click-indicator-text { font-size: 0.75em;}
             .modal-content { width: 95%; }
+
+            /* Ajustar tamaños base de fuentes relativas a vw para móvil */
+            .bac-info h3, .effects-info h2, .effects-info ul, .bac-info .drinks { font-size: 3vw; } /* Ejemplo, ajusta según necesidad */
+            .bac-info h3 { font-size: 3.5vw; }
+            .bac-info .drinks { font-size: 5vw; }
+            .effects-info h2 { font-size: 3.2vw; }
+            .effects-info ul { font-size: 2.8vw; }
         }
+         @media (max-width: 480px) { /* Ajustes más finos para pantallas muy pequeñas */
+              header h1 { font-size: 1.2em; }
+              .bac-info h3, .effects-info h2, .effects-info ul, .bac-info .drinks { font-size: 4vw; }
+              .bac-info h3 { font-size: 4.5vw; }
+              .bac-info .drinks { font-size: 7vw; }
+              .effects-info h2 { font-size: 4.2vw; }
+              .effects-info ul { font-size: 3.8vw; }
+              .state-drawing { height: 120px; }
+              .click-indicator { font-size: 1.2em; }
+              .click-indicator-text { font-size: 0.7em;}
+              .interaction-instruction { font-size: 0.85em; }
+              .disclaimer { font-size: 0.75em; }
+         }
 
     </style>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Efectos del Alcohol en la Sangre - Interactivo</title>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
-        <style>
-            /* Tus estilos CSS ... */
-        </style>
     </head>
-</head>
 <body>
 
     <div class="container">
         <header>
             <h1>Efectos en el cuerpo del Nivel de Alcohol en sangre</h1>
+            <span>🎧 Se recomienda usar audífonos para una mejor experiencia.</span>
         </header>
+        <div class="bac-gradient-bar"></div>
 
-        <div class="bac-gradient-bar"></div> <div class="interaction-instruction"> Haz clic en cada estado para ver y escuchar una representación de sus efectos.
-        </div>
 
         <main>
             <article class="bac-column" id="col-0" data-state-index="0">
@@ -232,18 +253,20 @@
                  <div class="effects-info"><h2>Deterioro Grave</h2><ul><li>Posible pérdida de consciencia.</li><li>Completa disfunción mental y fisica.</li></ul></div>
                   <div><span class="click-indicator">▶️</span><div class="click-indicator-text">Ver video</div></div>
              </article>
-            <article class="bac-column" id="col-6" data-state-index="6"> <div class="state-drawing"><img src="imagenes/riesgo_vital.png" alt="Ilustración de riesgo vital"></div>
+            <article class="bac-column" id="col-6" data-state-index="6">
+                 <div class="state-drawing"><img src="imagenes/riesgo_vital.png" alt="Ilustración de riesgo vital"></div>
                 <div class="bac-info"><h3>0.31% y más</h3><div class="drinks">☠️</div></div>
                 <div class="effects-info"><h2>Riesgo Vital</h2><ul><li>Coma etílico.</li><li>Muerte por paro respiratorio.</li></ul></div>
                  <div><span class="click-indicator">▶️</span><div class="click-indicator-text">Ver video</div></div>
             </article>
         </main>
         <div class="disclaimer">
-            <strong>Importante:</strong> La cantidad de bebidas es una <strong>estimación</strong> para un hombre promedio. El nivel de alcohol en sangre real varía según peso, género, metabolismo y otros factores.<br>
-            
+            <strong>Importante:</strong> La cantidad de bebidas es una <strong>estimación</strong> para un hombre promedio. El nivel de alcohol en sangre real varía según peso, género, metabolismo y otros factores. Esta visualización es educativa y no reemplaza el consejo médico profesional.<br>
+            <span style="font-size: 0.9em;">Fuentes generales sobre BAC y efectos: National Institute on Alcohol Abuse and Alcoholism (NIAAA), USA.</span> </div>
     </div>
 
-    <div id="videoModal" class="modal"> <div class="modal-content">
+    <div id="videoModal" class="modal">
+        <div class="modal-content">
             <span class="close-button">&times;</span>
             <h2 id="modalTitle">Título del Estado</h2>
             <video id="modalVideo" controls controlsList="nodownload">
@@ -254,29 +277,26 @@
     </div>
 
     <script>
-        // --- Datos de los estados (Incluyendo BPM estimados para sonificación) ---
-        // NOTA: Los BPM son APROXIMACIONES didácticas. La respuesta real es compleja.
-        // Fuente general de referencia: El alcohol tiende a aumentar BPM inicialmente,
-        // pero en niveles muy altos/tóxicos puede deprimir funciones, incluyendo cardíacas.
-        // Usaremos una simplificación: Normal -> Acelerado -> Irregular/Lento
+        // --- Datos de los estados (con parámetros de sonificación) ---
         const statesData = [
             { title: "Sobrio (0%)", video: "videos/estado_0.mp4", description: "Estado normal.",
-              bpm: 70, irregularity: 0,    velocity: 0.8,  lubNote: 'C2', dubNote: 'G2', filterFreq: 600 },
-            { title: "Relajación Inicial (0.03%)", video: "videos/estado_1.0.mp4", description: "Ligero mareo.",
-              bpm: 80, irregularity: 0,    velocity: 0.8,  lubNote: 'C2', dubNote: 'G2', filterFreq: 600 },
-            { title: "Euforia (0.06%)", video: "videos/estado_2.0.mp4", description: "Desinhibición.",
-              bpm: 90, irregularity: 0,    velocity: 0.85, lubNote: 'C#2', dubNote: 'G#2', filterFreq: 650 }, // Ligeramente más brillante
+              bpm: 70, irregularity: 0,    velocity: 2,  lubNote: 'C2', dubNote: 'G2', filterFreq: 600 },
+            { title: "Relajación Inicial (0.03%)", video: "videos/estado_1.0.mp4", description: "Ligero mareo.", // Asegúrate que el video sea correcto
+              bpm: 80, irregularity: 0.00,    velocity: 2,  lubNote: 'C2', dubNote: 'G2', filterFreq: 600 }, // Ligera irregularidad añadida
+            { title: "Euforia (0.06%)", video: "videos/estado_2.0.mp4", description: "Desinhibición.", // Asegúrate que el video sea correcto
+              bpm: 90, irregularity: 0.00,    velocity: 2, lubNote: 'C#2', dubNote: 'G#2', filterFreq: 650 },
             { title: "Deterioro Leve (0.09%)", video: "videos/estado_3.mp4", description: " descoordinación.",
-              bpm: 100, irregularity: 0.0, velocity: 0.85, lubNote: 'D2', dubNote: 'A2', filterFreq: 700 }, // Aún más brillante/tenso
-            { title: "Incapacidad (0.12%)", video: "videos/estado_4.0.mp4", description: "Deterioro motor severo.",
-              bpm: 110, irregularity: 0.0, velocity: 0.8,  lubNote: 'D2', dubNote: 'A2', filterFreq: 650 }, // Rápido pero empieza a apagarse
+              bpm: 100, irregularity: 0.0, velocity: 2, lubNote: 'D2', dubNote: 'A2', filterFreq: 700 }, // Aumentada irregularidad
+            { title: "Incapacidad (0.12%)", video: "videos/estado_4.0.mp4", description: "Deterioro motor severo.", // Asegúrate que el video sea correcto
+              bpm: 110, irregularity: 0.0, velocity: 2,  lubNote: 'D2', dubNote: 'A2', filterFreq: 650 },
             { title: "Deterioro Grave (0.26%)", video: "videos/estado_5.0.mp4", description: "Pérdida de consciencia.",
-              bpm: 60, irregularity: 0.0,  velocity: 0.75, lubNote: 'B1', dubNote: 'F#2', filterFreq: 500 }, // Más grave y apagado
+              bpm: 60, irregularity: 0.0,  velocity: 2, lubNote: 'B1', dubNote: 'F#2', filterFreq: 500 },
             { title: "Riesgo Vital (0.31%+)", video: "videos/estado_6.mp4", description: "Coma, paro respiratorio.",
-              bpm: 40, irregularity: 0.0,  velocity: 0.7,  lubNote: 'A1', dubNote: 'E2', filterFreq: 400 }  // Muy grave y apagado
+              bpm: 40, irregularity: 0.0,  velocity: 2,  lubNote: 'A1', dubNote: 'E2', filterFreq: 400 }
         ];
+        // Asegúrate que las rutas 'videos/estado_X.mp4' sean correctas y coincidan con los archivos que tienes.
 
-        // --- Lógica para la Modal (Sin cambios) ---
+        // --- Lógica para la Modal ---
         const modal = document.getElementById("videoModal");
         const modalTitle = document.getElementById("modalTitle");
         const modalVideo = document.getElementById("modalVideo");
@@ -284,157 +304,122 @@
         const closeButton = document.querySelector(".close-button");
 
         function openModal(stateIndex) {
-            // Detener sonido hover antes de abrir modal
-            stopHeartbeat();
+            stopHeartbeat(); // Detener sonido hover
             if (stateIndex >= 0 && stateIndex < statesData.length) {
                 const data = statesData[stateIndex];
                 modalTitle.textContent = data.title;
                 modalVideo.src = data.video;
                 modalDescription.textContent = data.description;
-                modal.style.display = "flex";
-                modalVideo.load(); // Carga el video
-                modalVideo.play();
+                modal.style.display = "flex"; // Mostrar modal
+                modalVideo.load();
+                modalVideo.play().catch(e => console.error("Error al reproducir video:", e)); // Añadir catch para errores
             } else { console.error("Índice inválido:", stateIndex); }
         }
 
         function closeModal() {
-            modal.style.display = "none";
+            modal.style.display = "none"; // Ocultar modal
             modalVideo.pause();
             modalVideo.currentTime = 0;
-            modalVideo.src = "";
+            modalVideo.src = ""; // Limpiar src
         }
         closeButton.addEventListener('click', closeModal);
         modal.addEventListener('click', (event) => { if (event.target === modal) { closeModal(); } });
         window.addEventListener('keydown', (event) => { if (event.key === 'Escape' && modal.style.display === 'flex') { closeModal(); } });
-        modalVideo.addEventListener('ended', closeModal);
-// --- Lógica de Sonificación con Tone.js ---
-        let lubSynth, dubSynth; // Dos synths para Lub-Dub
-        let lowPassFilter;    // Filtro para suavizar
-        let loop;             // El loop que controla el ritmo general (BPM)
+        modalVideo.addEventListener('ended', closeModal); // Cierra modal al terminar el video
 
-// Función para inicializar los componentes de audio
+        // --- Lógica de Sonificación con Tone.js (Corregida versión Lub-Dub) ---
+        let lubSynth, dubSynth;
+        let lowPassFilter;
+        let loop;
+
         function initializeAudio() {
             if (!lubSynth) {
-                // Synth para "Lub"
-                lubSynth = new Tone.Synth({
-                    oscillator: { type: 'sine' },
-                    envelope: { attack: 0.01, decay: 0.15, sustain: 0.05, release: 0.2 }
-                });
-
-                // Synth para "Dub"
-                dubSynth = new Tone.Synth({
-                    oscillator: { type: 'sine' },
-                    envelope: { attack: 0.005, decay: 0.08, sustain: 0.02, release: 0.1 }
-                });
-
-                // Filtro Pasa-Bajos (Frecuencia se ajustará dinámicamente)
-                lowPassFilter = new Tone.Filter({
-                    type: 'lowpass',
-                    // frequency: 600, // No se fija aquí
-                    Q: 1
-                }).toDestination();
-
-                // Conectar synths AL FILTRO
+                lubSynth = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.15, sustain: 0.05, release: 0.2 } });
+                dubSynth = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.005, decay: 0.08, sustain: 0.02, release: 0.1 } });
+                lowPassFilter = new Tone.Filter({ type: 'lowpass', Q: 1 }).toDestination();
                 lubSynth.connect(lowPassFilter);
                 dubSynth.connect(lowPassFilter);
             }
         }
 
-// Función para iniciar el latido Lub-Dub con timbre y volumen variable
         function startHeartbeat(stateIndex) {
             initializeAudio();
 
-            if (stateIndex < 0 || stateIndex >= statesData.length) {
-                console.error("Índice de estado inválido:", stateIndex);
-                return;
-            }
+            if (stateIndex < 0 || stateIndex >= statesData.length) return;
             const data = statesData[stateIndex];
             const bpm = data.bpm;
             const irregularity = data.irregularity || 0;
-            const velocity = data.velocity; // Volumen general
+            const velocity = data.velocity;
             const lubNote = data.lubNote;
             const dubNote = data.dubNote;
-            const filterFreq = data.filterFreq; // Frecuencia del filtro
+            const filterFreq = data.filterFreq;
 
-            // Detiene cualquier loop anterior
-            if (loop) {
-                loop.stop(0);
-                loop.dispose();
-            }
+            if (loop) { loop.stop(0); loop.dispose(); }
 
-            // *** AJUSTAR FRECUENCIA DEL FILTRO ***
-            // Usamos 'rampTo' para una transición suave si el usuario mueve rápido el cursor
-            lowPassFilter.frequency.rampTo(filterFreq, 0.1); // Transición en 0.1 segundos
+            // Ajustar frecuencia del filtro suavemente
+            lowPassFilter.frequency.rampTo(filterFreq, 0.1);
 
-            // Intervalo base y delay Lub-Dub
             const baseInterval = 60 / bpm;
-            const lubDubDelay = 0.15; // Puedes mantenerlo fijo o hacerlo variable también
+            const lubDubDelay = baseInterval * 0.3; // Delay proporcional al intervalo
 
-            // Máxima variación permitida y límite mínimo
-            const maxDeviation = baseInterval * irregularity;
-            const minAllowedInterval = baseInterval * 0.90; // Mantenemos límite estricto
+             // Aseguramos irregularidad dentro de límites razonables
+            const maxDeviationFactor = Math.min(irregularity, 0.8); // No más del 80% de variación
 
-            // Crea un nuevo loop
+
             loop = new Tone.Loop(time => {
-                // Cálculo de intervalo con irregularidad y límite
-                const deviation = (Math.random() * 2 - 1) * maxDeviation;
-                let currentInterval = baseInterval + deviation;
-                if (currentInterval < minAllowedInterval) {
-                    currentInterval = minAllowedInterval;
-                }
+                // Cálculo de intervalo con irregularidad limitada
+                 const deviationFactor = (Math.random() - 0.5) * 2 * maxDeviationFactor;
+                 let currentInterval = baseInterval * (1 + deviationFactor);
+                 // Evitar intervalos demasiado cortos o negativos si la irregularidad es alta
+                 currentInterval = Math.max(currentInterval, baseInterval * 0.2); // Intervalo mínimo 20% del base
 
-                // *** Programar Lub y Dub con NOTAS y VELOCITY variables ***
-                // Lub:
-                lubSynth.triggerAttackRelease(lubNote, '8n', time, velocity * 0.9); // Usa la nota y velocity del estado
 
-                // Dub:
-                dubSynth.triggerAttackRelease(dubNote, '16n', time + lubDubDelay, velocity); // Usa la nota y velocity del estado
+                // Programar Lub y Dub
+                lubSynth.triggerAttackRelease(lubNote, '8n', time, velocity * 0.9);
+                dubSynth.triggerAttackRelease(dubNote, '16n', time + lubDubDelay, velocity);
 
-                // Ajusta la duración del PRÓXIMO ciclo del loop
-                loop.interval = currentInterval;
+                loop.interval = currentInterval; // Ajustar próximo ciclo
 
             }, baseInterval);
 
-            // Iniciar transporte y loop
             Tone.Transport.start();
             loop.start(0);
         }
 
-        // Función stopHeartbeat (sin cambios necesarios respecto a la versión anterior)
         function stopHeartbeat() {
             if (loop) {
                 loop.stop(0);
                 loop.dispose();
                 loop = null;
             }
-            if(lubSynth) lubSynth.triggerRelease(Tone.now());
-            if(dubSynth) dubSynth.triggerRelease(Tone.now());
+            // Suelta las notas si estaban sonando al salir rápido
+             if (lubSynth && lubSynth.context.state === 'running') lubSynth.triggerRelease(Tone.now());
+             if (dubSynth && dubSynth.context.state === 'running') dubSynth.triggerRelease(Tone.now());
         }
 
-        // --- Asignación de Eventos (Hover y Clic) ---
+        // --- Asignación de Eventos ---
         document.querySelectorAll('.bac-column').forEach(column => {
-            // Evento HOVER (mouseenter)
             column.addEventListener('mouseenter', async () => {
-                // Inicia el contexto de audio en interacción del usuario (importante!)
-                await Tone.start();
-                const stateIndex = parseInt(column.getAttribute('data-state-index'));
-                // Llama a startHeartbeat solo con el índice
-                startHeartbeat(stateIndex);
+                try {
+                     // Intenta iniciar Tone.js solo si no está corriendo
+                     if (Tone.context.state !== 'running') {
+                         await Tone.start();
+                         console.log("AudioContext started!");
+                     }
+                    const stateIndex = parseInt(column.getAttribute('data-state-index'));
+                    startHeartbeat(stateIndex);
+                } catch (e) {
+                    console.error("Error starting Tone.js or heartbeat:", e);
+                }
             });
-
-            // Evento para detener el sonido al salir (mouseleave)
-            column.addEventListener('mouseleave', () => {
-                stopHeartbeat();
-            });
-
-            // Evento CLIC (para abrir la modal)
+            column.addEventListener('mouseleave', stopHeartbeat);
             column.addEventListener('click', () => {
                 const stateIndex = parseInt(column.getAttribute('data-state-index'));
                 openModal(stateIndex);
             });
         });
-//Lindo <3 atte: Chris
-</script>
+
+    </script>
 
 </body>
 </html>
