@@ -166,6 +166,41 @@
         .close-button:hover, .close-button:focus { color: black; text-decoration: none; }
         .modal-content video { width: 100%; max-height: 70vh; margin-bottom: 15px; }
 
+        .modal-description-structured {
+            text-align: left; /* Alinear a la izquierda para listas */
+            margin-top: 20px;
+            padding: 0 10px; /* Un poco de padding */
+            font-size: 0.95em;
+            color: #333;
+        }
+        .modal-description-structured h4 {
+            font-size: 1.1em;
+            color: #000;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 4px;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+        .modal-description-structured ul {
+            list-style: disc; /* Usar viñetas */
+            padding-left: 20px;
+            margin: 0;
+        }
+        .modal-description-structured li {
+            margin-bottom: 5px;
+        }
+        .modal-description-structured .sonification-text {
+            margin-top: 8px;
+            font-size: 0.9em;
+        }
+        .modal-description-structured .sonification-text strong {
+            color: #000;
+            font-size: 1.1em;
+        }
+        /* --- Fin de Estilos Nuevos --- */
+
+
+
         /* --- Responsive (Añadido/Ajustado) --- */
         @media (max-width: 900px) {
             main { flex-direction: column; overflow-x: hidden; }
@@ -211,7 +246,7 @@
     <div class="container">
         <header>
             <h1>Efectos en el cuerpo del Nivel de Alcohol en sangre</h1>
-            <span>🎧 Se recomienda usar audífonos para una mejor experiencia.</span>
+            <span>Usar 🎧 para una mejor experiencia.</span>
         </header>
         <div class="bac-gradient-bar"></div>
 
@@ -262,7 +297,7 @@
         </main>
         <div class="disclaimer">
             <strong>Importante:</strong> La cantidad de bebidas es una <strong>estimación</strong> para un hombre promedio. El nivel de alcohol en sangre real varía según peso, género, metabolismo y otros factores. Esta visualización es educativa y no reemplaza el consejo médico profesional.<br>
-            <span style="font-size: 0.9em;">Fuentes generales sobre BAC y efectos: National Institute on Alcohol Abuse and Alcoholism (NIAAA), USA.</span> </div>
+            <span style="font-size: 0.9em;">Fuentes generales sobre BAC y efectos: National Institute on Alcohol Abuse and Alcoholism (NIAAA), USA y NHTSA.</span> </div>
     </div>
 
     <div id="videoModal" class="modal">
@@ -272,29 +307,78 @@
             <video id="modalVideo" controls controlsList="nodownload">
                 Tu navegador no soporta la etiqueta de video.
             </video>
-            <p id="modalDescription">Descripción adicional si es necesaria.</p>
+            <div id="modalDescription" class="modal-description-structured">
+                </div>
         </div>
     </div>
 
     <script>
-        // --- Datos de los estados (con parámetros de sonificación) ---
+
+        // --- (MODIFICADO) Datos de los estados con descripciones HTML ---
         const statesData = [
-            { title: "Sobrio (0%)", video: "videos/estado_0.mp4", description: "Estado normal.",
+            { title: "Sobrio (0%)", video: "videos/estado_0.mp4", description: `
+                <h4 class="effects-subtitle">✅ Estado Base</h4>
+                <p class="key-fact-text">Tu cuerpo opera sin interferencias. Este es el punto de referencia: todas tus habilidades cognitivas y motoras están intactas.</p>
+
+                <h4 class="effects-subtitle">🧠 Juicio Intacto</h4>
+                <p class="key-fact-text">La capacidad para tomar decisiones, dividir tu atención y reaccionar ante peligros está al 100%.</p>
+            `,
               bpm: 70, irregularity: 0,    velocity: 2,  lubNote: 'C2', dubNote: 'G2', filterFreq: 600 },
-            { title: "Relajación Inicial (0.03%)", video: "videos/estado_1.0.mp4", description: "Ligero mareo.", // Asegúrate que el video sea correcto
-              bpm: 80, irregularity: 0.00,    velocity: 2,  lubNote: 'C2', dubNote: 'G2', filterFreq: 600 }, // Ligera irregularidad añadida
-            { title: "Euforia (0.06%)", video: "videos/estado_2.0.mp4", description: "Desinhibición.", // Asegúrate que el video sea correcto
-              bpm: 90, irregularity: 0.00,    velocity: 2, lubNote: 'C#2', dubNote: 'G#2', filterFreq: 650 },
-            { title: "Deterioro Leve (0.09%)", video: "videos/estado_3.mp4", description: " descoordinación.",
-              bpm: 100, irregularity: 0.0, velocity: 2, lubNote: 'D2', dubNote: 'A2', filterFreq: 700 }, // Aumentada irregularidad
-            { title: "Incapacidad (0.12%)", video: "videos/estado_4.0.mp4", description: "Deterioro motor severo.", // Asegúrate que el video sea correcto
+            
+            { title: "Relajación Inicial (0.03%)", video: "videos/estado_1.0.mp4", description: `
+                <h4 class="effects-subtitle">😊 Percepción: "Me siento bien"</h4>
+                <p class="key-fact-text">Comienzas a sentirte relajado, cálido y ligeramente eufórico ("high"). Crees tener todo bajo control.</p>
+
+                <h4 class="effects-subtitle">🧠 Realidad: El Deterioro Inicia</h4>
+                <p class="key-fact-text">La ironía del alcohol: tu juicio ya está afectado. La incapacidad de *reconocer* el deterioro es, de hecho, el primer síntoma del deterioro (Fuente: NHTSA).</p>
+            `,
+              bpm: 80, irregularity: 0,    velocity: 2,  lubNote: 'C2', dubNote: 'G2', filterFreq: 600 },
+            
+            { title: "Euforia (0.06%)", video: "videos/estado_2.0.mp4", description: `
+                <h4 class="effects-subtitle">🎉 Percepción: "Estoy sociable"</h4>
+                <p class="key-fact-text">Te sientes eufórico y desinhibido. Las emociones (buenas y malas) se exageran y la timidez desaparece.</p>
+
+                <h4 class="effects-subtitle">🧠 Realidad: Juicio Afectado</h4>
+                <p class="key-fact-text">El área del cerebro que controla el razonamiento y la memoria está afectada. Esto reduce tu capacidad de respuesta ante emergencias.</p>
+            `,
+              bpm: 90, irregularity: 0,    velocity: 2, lubNote: 'C#2', dubNote: 'G#2', filterFreq: 650 },
+            
+            { title: "Deterioro Leve (0.09%)", video: "videos/estado_3.mp4", description: `
+                <h4 class="effects-subtitle">🥴 Percepción: "Estoy mareado"</h4>
+                <p class="key-fact-text">El equilibrio, el habla y la visión están visiblemente afectados. La fatiga mental y física es evidente para ti y para los demás.</p>
+
+                <h4 class="effects-subtitle">⚠️ Riesgo: Peligro Real</h4>
+                <p class="key-fact-text">Tu capacidad para detectar peligros está dañada. Tienes aproximadamente **4 veces más probabilidades de chocar** que un conductor sobrio (Fuente: NHTSA).</p>
+            `,
+              bpm: 100, irregularity: 0.0, velocity: 2, lubNote: 'D2', dubNote: 'A2', filterFreq: 700 },
+            
+            { title: "Incapacidad (0.12%)", video: "videos/estado_4.0.mp4", description: `
+                <h4 class="effects-subtitle">🤢 Efecto Depresivo</h4>
+                <p class="key-fact-text">La sensación de euforia desaparece y es reemplazada por un efecto depresivo (ansiedad o tristeza). Son comunes las náuseas y el vómito.</p>
+
+                <h4 class="effects-subtitle">⚠️ Riesgo: Multiplicado</h4>
+                <p class="key-fact-text">Tu control muscular es mínimo. El riesgo de un accidente fatal en este nivel (o cercano a 0.15) es al menos **12 veces mayor** que en sobriedad (Fuente: NHTSA).</p>
+            `,
               bpm: 110, irregularity: 0.0, velocity: 2,  lubNote: 'D2', dubNote: 'A2', filterFreq: 650 },
-            { title: "Deterioro Grave (0.26%)", video: "videos/estado_5.0.mp4", description: "Pérdida de consciencia.",
+            
+            { title: "Deterioro Grave (0.26%)", video: "videos/estado_5.0.mp4", description: `
+                <h4 class="effects-subtitle">😵 Desorientación Total (Estupor)</h4>
+                <p class="key-fact-text">Estás en un estado de confusión y desorientación ("dazed and confused"). No comprendes dónde estás ni qué hora es (Fuente: NIAAA).</p>
+
+                <h4 class="effects-subtitle">🧠 Consecuencia: Amnesia</h4>
+                <p class="key-fact-text">Es muy probable que sufras un "blackout" (amnesia). Puedes realizar acciones y hablar, pero no tendrás ningún recuerdo de ello al día siguiente.</p>
+            `,
               bpm: 60, irregularity: 0.0,  velocity: 2, lubNote: 'B1', dubNote: 'F#2', filterFreq: 500 },
-            { title: "Riesgo Vital (0.31%+)", video: "videos/estado_6.mp4", description: "Coma, paro respiratorio.",
+            
+            { title: "Riesgo Vital (0.31%+)", video: "videos/estado_6.mp4", description: `
+                <h4 class="effects-subtitle">☠️ Emergencia Médica: Coma</h4>
+                <p class="key-fact-text">Has alcanzado un nivel de anestesia quirúrgica. El cuerpo entra en coma para protegerse de la intoxicación aguda por alcohol.</p>
+
+                <h4 class="effects-subtitle">💔 Falla Sistémica</h4>
+                <p class_name="key-fact-text">Los reflejos vitales, como la respiración y el ritmo cardíaco, comienzan a fallar. La muerte por paro respiratorio es una posibilidad real (Fuente: NIAAA).</p>
+            `,
               bpm: 40, irregularity: 0.0,  velocity: 2,  lubNote: 'A1', dubNote: 'E2', filterFreq: 400 }
         ];
-        // Asegúrate que las rutas 'videos/estado_X.mp4' sean correctas y coincidan con los archivos que tienes.
 
         // --- Lógica para la Modal ---
         const modal = document.getElementById("videoModal");
@@ -309,7 +393,7 @@
                 const data = statesData[stateIndex];
                 modalTitle.textContent = data.title;
                 modalVideo.src = data.video;
-                modalDescription.textContent = data.description;
+                modalDescription.innerHTML = data.description;
                 modal.style.display = "flex"; // Mostrar modal
                 modalVideo.load();
                 modalVideo.play().catch(e => console.error("Error al reproducir video:", e)); // Añadir catch para errores
@@ -321,6 +405,7 @@
             modalVideo.pause();
             modalVideo.currentTime = 0;
             modalVideo.src = ""; // Limpiar src
+            modalDescription.innerHTML = "";
         }
         closeButton.addEventListener('click', closeModal);
         modal.addEventListener('click', (event) => { if (event.target === modal) { closeModal(); } });
