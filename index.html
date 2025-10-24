@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Efectos del Alcohol en la Sangre</title>
+    <title>Efectos del Alcohol en la Sangre - Interactivo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <style>
-        /* --- Estilos Generales --- */
+        /* --- Estilos Generales (Tu código original) --- */
         :root {
             --color-texto: #333;
             --color-borde: #e9ecef;
@@ -17,47 +18,38 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #f4f7f9;
             color: var(--color-texto);
-            overflow: auto; /* Evita cualquier scroll */
+            /* Quitamos overflow: auto; para permitir scroll si es necesario */
         }
 
-        /* --- Estructura Principal (Ocupa toda la pantalla) --- */
         .container {
             display: flex;
             flex-direction: column;
-            height: 100vh; /* 100% de la altura de la ventana */
-            width: 100vw;  /* 100% del ancho de la ventana */
+            /* Usamos min-height para permitir que el contenido crezca */
+            min-height: 100vh;
+            width: 100vw;
         }
 
-        /* --- Encabezado y Disclaimer --- */
         header {
             background-color: #343a40;
             color: white;
-            padding: 10px 20px;
+            padding: 3px 20px;
             text-align: center;
+            flex-shrink: 0; /* Añadido para consistencia */
         }
+        header h1 { margin: 0; font-size: 1.5em; }
 
-        header h1 {
-            margin: 0;
-            font-size: 1.5em;
-        }
-
-        /* --- INICIO DE LA MODIFICACIÓN --- */
-
-        /* 1. Se añade la nueva barra de gradiente con colores más acentuados */
+        /* --- Barra de Gradiente (Tu código original) --- */
         .bac-gradient-bar {
             height: 30px;
             width: 100%;
-            border-radius: 5px;
+            /*border-radius: 5px; /* Comentado como en tu última versión */
             flex-shrink: 0;
-            /* Gradiente que va de bienestar (verde) a malestar (negro) */
-            background: linear-gradient(to right, 
+            background: linear-gradient(to right,
                 #2ecc71, /* Verde (Bienestar) */
                 #f1c40f, /* Amarillo (Advertencia) */
                 #000000  /* Negro (Malestar Severo) */
             );
         }
-
-        /* --- FIN DE LA MODIFICACIÓN --- */
 
         .disclaimer {
             background-color: #fff3cd;
@@ -65,246 +57,454 @@
             padding: 8px;
             font-size: 0.8em;
             text-align: center;
-            flex-shrink: 0; /* No se encoge */
+            flex-shrink: 0;
+        }
+        /* Instrucción de Interacción / Propósito */
+        .interaction-instruction {
+            text-align: center;
+            padding: 5px; /* Aumentado padding */
+            font-style: italic;
+            color: #0c5460; /* Color más legible */
+            background-color: #d1ecf1; /* Fondo azul claro distintivo */
+            flex-shrink: 0;
+            font-size: 0.95em; /* Ligeramente más grande */
+            line-height: 1.5; /* Mejor espaciado */
+            border-bottom: 1px solid #bee5eb; /* Borde sutil */
+        }
+        .headphone-recommendation { /* Estilo específico para audífonos */
+             color: #dc3545; /* Rojo para destacar */
+             font-weight: bold;
+             display: block; /* Asegura línea nueva */
+             margin-top: 5px;
         }
 
-        /* --- Contenido Principal (Layout de Columnas) --- */
+
+        /* --- Contenido Principal (Tu código original) --- */
         main {
             display: flex;
-            flex-direction: row; /* Columnas una al lado de la otra */
-            flex-grow: 1; /* Ocupa el resto del espacio vertical */
+            flex-direction: row;
+            flex-grow: 1;
             background-color: #ffffff;
             width: 100%;
+            /* Añadido para manejar desbordamiento */
+            overflow-x: auto;
         }
-        
-        /* --- Cada Columna/Tarjeta de BAC --- */
+
+        /* --- Cada Columna (Tu código original + interactividad) --- */
         .bac-column {
-            flex: 1; /* Cada columna ocupa el mismo espacio horizontal */
+            flex: 1;
+            min-width: 160px; /* Ancho mínimo */
             display: flex;
-            flex-direction: column; /* Contenido apilado verticalmente */
+            flex-direction: column;
             border-right: 1px solid var(--color-borde);
             padding: 15px;
             text-align: center;
-            justify-content: flex-start; /* Alinea todo el contenido hacia arriba */
+            justify-content: flex-start; /* Alineación original */
+            cursor: pointer; /* Indica clic */
+            transition: background-color 0.3s ease, transform 0.2s ease; /* Transiciones */
         }
-        .bac-column:last-child {
-            border-right: none;
+         .bac-column:hover {
+            background-color: #f0f0f0; /* Efecto hover */
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
+        .bac-column:last-child { border-right: none; }
+
+        /* --- Contenido Interno (Tu código original) --- */
         .bac-info {
-            height: 12vw; /* Altura fija relativa al ancho de la pantalla */
+            height: 12vw; /* Altura original relativa */
             display: flex;
             flex-direction: column;
+            /* Añadir min-height por si vw es muy pequeño */
+            min-height: 80px;
         }
-        .bac-info h3 {
-            margin: 0 0 5px 0;
-            font-size: 1.5vw; /* Tamaño de fuente relativo al ancho de la pantalla */
-        }
-
-        .bac-info p {
-            margin: 0;
-            font-size: 1vw;
-            color: #6c757d;
-        }
-
-        .bac-info .drinks {
-            font-size: 2.5vw;
-            margin: 5px 0;
-        }
+        .bac-info h3 { margin: 0 0 5px 0; font-size: 1.5vw; }
+        .bac-info p { margin: 0; font-size: 1vw; color: #6c757d; } /* Este estilo no parece usarse */
+        .bac-info .drinks { font-size: 2.5vw; margin: 5px 0; }
 
         .effects-info {
             margin-top: 15px;
             display: flex;
             flex-direction: column;
             text-align: center;
-            flex-grow: 1; /* Hace que esta sección ocupe el espacio vertical restante */
+            flex-grow: 1; /* Ocupa espacio restante */
+            /* Añadimos un espacio mínimo abajo antes del indicador */
+            margin-bottom: 10px;
         }
-        
-        .effects-info h2 {
-            font-size: 1.2vw;
-            margin: 0 0 12px 0;
-        }
-
-        .effects-info ul {
-            list-style: none;
-            padding-left: 0;
-            text-align: center; /* Alinea los puntos de la lista al centro */
-            font-size: 0.85vw; /* Tamaño de fuente más pequeño para que quepa el texto */
-        }
-        
-        .effects-info li {
-            margin-bottom: 8px;
-        }
+        .effects-info h2 { font-size: 1.2vw; margin: 0 0 12px 0; }
+        .effects-info ul { list-style: none; padding-left: 0; text-align: center; font-size: 0.85vw; }
+        .effects-info li { margin-bottom: 8px; }
 
         .state-drawing {
-            margin-top: auto; /* Empuja el dibujo al fondo para alinearlo */
-            padding-top: 0px;
-            height: 14vw; /* Altura fija para el contenedor del dibujo */
+            /* margin-top: auto; Se quita para usar flex-grow en effects-info */
+            padding-top: 0px; /* Añadido espacio arriba */
+            height: 14vw; /* Altura original relativa */
+             /* Añadir min/max height */
+            min-height: 100px;
+            max-height: 180px;
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 100%; /* Asegura que la imagen se centre */
         }
-        
-        .state-drawing img {
-            max-height: 100%; /* Corregido para que la imagen se ajuste correctamente */
-            max-width: 100%;
-            object-fit: contain; /* Asegura que la imagen mantenga su proporción */
-        }
+        .state-drawing img { max-height: 100%; max-width: 100%; object-fit: contain; }
 
-        .state-drawing svg {
-            height: 100%; /* El dibujo ocupa toda la altura del contenedor */
-            width: 100%;
+        /* Indicador visual de clic (Añadido) */
+        .click-indicator { font-size: 1.8em; color: rgba(0, 0, 0, 0.4); display: block; }
+        .click-indicator-text { font-size: 0.8em; color: #6c757d; margin-top: 2px; }
+
+        /* --- Estilos Modal (Añadidos) --- */
+        .modal {
+            display: none; /* *** CRUCIAL: Empieza oculto *** */
+            position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7);
+            /* Cambiado display a flex para usarlo en JS para mostrar/centrar */
+            /* display: flex; */ /* Se maneja con JS */
+            justify-content: center; align-items: center;
         }
+        .modal-content { background-color: #fefefe; margin: auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 700px; text-align: center; border-radius: 8px; position: relative; }
+        .close-button { color: #aaa; position: absolute; top: 10px; right: 20px; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close-button:hover, .close-button:focus { color: black; text-decoration: none; }
+        .modal-content video { width: 100%; max-height: 70vh; margin-bottom: 15px; }
+
+        .modal-description-structured {
+            text-align: left; /* Alinear a la izquierda para listas */
+            margin-top: 20px;
+            padding: 0 10px; /* Un poco de padding */
+            font-size: 0.95em;
+            color: #333;
+        }
+        .modal-description-structured h4 {
+            font-size: 1.1em;
+            color: #000;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 4px;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+        .modal-description-structured ul {
+            list-style: disc; /* Usar viñetas */
+            padding-left: 20px;
+            margin: 0;
+        }
+        .modal-description-structured li {
+            margin-bottom: 5px;
+        }
+        .modal-description-structured .sonification-text {
+            margin-top: 8px;
+            font-size: 0.9em;
+        }
+        .modal-description-structured .sonification-text strong {
+            color: #000;
+            font-size: 1.1em;
+        }
+        /* --- Fin de Estilos Nuevos --- */
+
+
+
+        /* --- Responsive (Añadido/Ajustado) --- */
+        @media (max-width: 900px) {
+            main { flex-direction: column; overflow-x: hidden; }
+            .bac-column { border-right: none; border-bottom: 1px solid var(--color-borde); min-width: unset; width: auto; padding: 15px; }
+            .bac-column:last-child { border-bottom: none; }
+            /* Ajustar tamaños relativos a vw/vh o usar valores fijos para móvil */
+             .bac-info, .state-drawing { height: auto; /* Altura automática en móvil */ min-height: unset;}
+             .bac-info h3 { font-size: 1.2em; }
+             /* .bac-info p { font-size: 0.9em; } */ /* Comentado si no se usa */
+             .bac-info .drinks { font-size: 2em; }
+             .effects-info h2 { font-size: 1.1em; }
+             .effects-info ul { font-size: 0.9em; }
+             .state-drawing { height: 150px; } /* Altura más fija si prefieres */
+             .click-indicator { font-size: 1.5em; }
+             .click-indicator-text { font-size: 0.75em;}
+            .modal-content { width: 95%; }
+
+            /* Ajustar tamaños base de fuentes relativas a vw para móvil */
+            .bac-info h3, .effects-info h2, .effects-info ul, .bac-info .drinks { font-size: 3vw; } /* Ejemplo, ajusta según necesidad */
+            .bac-info h3 { font-size: 3.5vw; }
+            .bac-info .drinks { font-size: 5vw; }
+            .effects-info h2 { font-size: 3.2vw; }
+            .effects-info ul { font-size: 2.8vw; }
+        }
+         @media (max-width: 480px) { /* Ajustes más finos para pantallas muy pequeñas */
+              header h1 { font-size: 1.2em; }
+              .bac-info h3, .effects-info h2, .effects-info ul, .bac-info .drinks { font-size: 4vw; }
+              .bac-info h3 { font-size: 4.5vw; }
+              .bac-info .drinks { font-size: 7vw; }
+              .effects-info h2 { font-size: 4.2vw; }
+              .effects-info ul { font-size: 3.8vw; }
+              .state-drawing { height: 120px; }
+              .click-indicator { font-size: 1.2em; }
+              .click-indicator-text { font-size: 0.7em;}
+              .interaction-instruction { font-size: 0.85em; }
+              .disclaimer { font-size: 0.75em; }
+         }
 
     </style>
-</head>
+    </head>
 <body>
 
     <div class="container">
         <header>
             <h1>Efectos en el cuerpo del Nivel de Alcohol en sangre</h1>
+            <span>Usa 🎧 y pon el cursor en los estados.</span>
         </header>
-
         <div class="bac-gradient-bar"></div>
+
+
         <main>
-            <article class="bac-column" id="col-0">
-
-                <div class="state-drawing">
-                    <img src="imagenes/bienestar.png" alt="Ilustración de bienestar inicial">
-                </div>
-                <div class="bac-info">
-                    <h3>0%</h3>
-                    <div class="drinks">🫙</div>
-                </div>
-                <div class="effects-info">
-                    <h2>Sobrio</h2>
-                    <ul>
-                        <li>Estado saludable.</li>
-                        <li>Sentidos en completo funcionamiento.</li>
-                        
-                    </ul>
-
-                </div>
+            <article class="bac-column" id="col-0" data-state-index="0">
+                <div class="state-drawing"><img src="imagenes/bienestar.png" alt="Ilustración de bienestar"></div>
+                <div class="bac-info"><h3>0%</h3><div class="drinks">🫙</div></div>
+                <div class="effects-info"><h2>Sobrio</h2></div>
+                <div><span class="click-indicator">▶️</span><div class="click-indicator-text">Ver video</div></div>
             </article>
-
-            <article class="bac-column" id="col-1">
-                <div class="state-drawing">
-                    <img src="imagenes/relajacion_inicial.png" alt="Ilustración de relajacion inicial">
-                </div>
-                <div class="bac-info">
-                    <h3>0.03%</h3>
-                    <div class="drinks">🍺</div>
-                </div>
-                <div class="effects-info">
-                    <h2>Relajación Inicial</h2>
-                    <ul>
-                        <li>Mareo leve.</li>
-                        <li>Estado de relajación.</li>
-                        <li>Alteración del humor.</li>
-                    </ul>
-
-                </div>
+            <article class="bac-column" id="col-1" data-state-index="1">
+                 <div class="state-drawing"><img src="imagenes/relajacion_inicial2.png" alt="Ilustración de relajación inicial"></div>
+                <div class="bac-info"><h3>0.03%</h3><div class="drinks">🍺</div></div>
+                <div class="effects-info"><h2>Relajación Inicial</h2></div>
+                 <div><span class="click-indicator">▶️</span><div class="click-indicator-text">Ver video</div></div>
             </article>
-
-            <article class="bac-column" id="col-2">
-
-                <div class="state-drawing">
-                    <img src="imagenes/euforia.png" alt="Ilustración de euforia">
-                </div>
-                <div class="bac-info">
-                    <h3>0.06%</h3>
-                    <div class="drinks">🍺🍺</div>
-                </div>
-                <div class="effects-info">
-                    <h2>Euforia</h2>
-                    <ul>
-                        <li>Júbilo y desinhibición.</li>
-                        <li>Leve deterioro del razonamiento.</li>
-                    </ul>
-
-                </div>
+            <article class="bac-column" id="col-2" data-state-index="2">
+                 <div class="state-drawing"><img src="imagenes/euforia2.png" alt="Ilustración de euforia"></div>
+                <div class="bac-info"><h3>0.06%</h3><div class="drinks">🍺🍺</div></div>
+                <div class="effects-info"><h2>Euforia</h2></div>
+                 <div><span class="click-indicator">▶️</span><div class="click-indicator-text">Ver video</div></div>
             </article>
-            
-            <article class="bac-column" id="col-3">
-
-                    <div class="state-drawing">
-                        <img src="imagenes/deterioro_evidente.png" alt="Ilustración de deterioro evidente">
-                    </div>
-                <div class="bac-info">
-                    <h3>0.09%</h3>
-                    <div class="drinks">🍺🍺🍺</div>
-                </div>
-                <div class="effects-info">
-                    <h2>Deterioro Leve</h2>
-                    <ul>
-                        <li>Coordinación deficiente.</li>
-                        <li>Deterioro del habla.</li>
-                        <li>Bajo juicio.</li>
-                    </ul>
-
-                </div>
+             <article class="bac-column" id="col-3" data-state-index="3">
+                 <div class="state-drawing"><img src="imagenes/deterioro_evidente.png" alt="Ilustración de deterioro evidente"></div>
+                <div class="bac-info"><h3>0.09%</h3><div class="drinks">🍺🍺🍺</div></div>
+                <div class="effects-info"><h2>Deterioro Leve</h2></div>
+                 <div><span class="click-indicator">▶️</span><div class="click-indicator-text">Ver video</div></div>
             </article>
-            
-            <article class="bac-column" id="col-4">
-
-                    <div class="state-drawing">
-                        <img src="imagenes/legalmente_incapacitado.png" alt="Ilustración de legalmente incapacitado">
-                    </div>
-                <div class="bac-info">
-                    <h3>0.12%</h3>
-                    <div class="drinks">🍺🍺🍺🍺</div>
-                </div>
-                <div class="effects-info">
-                    <h2>Incapacidad</h2>
-                    <ul>
-                        <li>Deterioro motor severo.</li>
-                        <li>Juicio y percepción severamente afectados.</li>
-                        <li>Mareos y vómitos.</li>
-                    </ul>
-
-                </div>
+             <article class="bac-column" id="col-4" data-state-index="4">
+                 <div class="state-drawing"><img src="imagenes/legalmente_incapacitado.png" alt="Ilustración de legalmente incapacitado"></div>
+                <div class="bac-info"><h3>0.12%</h3><div class="drinks">🍺🍺🍺🍺</div></div>
+                <div class="effects-info"><h2>Incapacidad</h2></div>
+                 <div><span class="click-indicator">▶️</span><div class="click-indicator-text">Ver video</div></div>
             </article>
-            
-            <article class="bac-column" id="col-5">
-
-                    <div class="state-drawing">
-                        <img src="imagenes/deterioro_grave.png" alt="Ilustración de deterioro grave">
-                    </div>
-                <div class="bac-info">
-                    <h3>0.26%</h3>
-                    <div class="drinks">🍺🍺🍺🍺🍺🍺🍺🍺</div>
-                </div>
-                <div class="effects-info">
-                    <h2>Deterioro Grave</h2>
-                    <ul>
-                        <li>Posible pérdida de consciencia.</li>
-                        <li>Completa disfunción mental y fisica.</li>
-                    </ul>
-
-                </div>
-            </article>
-            
-            <article class="bac-column" id="col-7">
-                    <div class="state-drawing">
-                        <img src="imagenes/riesgo_vital.png" alt="Ilustración de riesgo vital">
-                    </div>
-                <div class="bac-info">
-                    <h3>0.31% y más</h3>
-                    <div class="drinks">☠️</div>
-                </div>
-                <div class="effects-info">
-                    <h2>Riesgo Vital</h2>
-                    <ul>
-                        <li>Coma etílico.</li>
-                        <li>Muerte por paro respiratorio.</li>
-                    </ul>
-
-                </div>
+             <article class="bac-column" id="col-5" data-state-index="5">
+                 <div class="state-drawing"><img src="imagenes/deterioro_grave.png" alt="Ilustración de deterioro grave"></div>
+                 <div class="bac-info"><h3>0.26%</h3><div class="drinks">🍺🍺🍺🍺🍺🍺🍺🍺</div></div>
+                 <div class="effects-info"><h2>Deterioro Grave</h2></div>
+                  <div><span class="click-indicator">▶️</span><div class="click-indicator-text">Ver video</div></div>
+             </article>
+            <article class="bac-column" id="col-6" data-state-index="6">
+                 <div class="state-drawing"><img src="imagenes/riesgo_vital.png" alt="Ilustración de riesgo vital"></div>
+                <div class="bac-info"><h3>0.31% y más</h3><div class="drinks">☠️</div></div>
+                <div class="effects-info"><h2>Riesgo Vital</h2></div>
+                 <div><span class="click-indicator">▶️</span><div class="click-indicator-text">Ver video</div></div>
             </article>
         </main>
         <div class="disclaimer">
-            <strong>Importante:</strong> La cantidad de bebidas es una <strong>estimación</strong> para un hombre promedio. El nivel de alcohol en sangre real varía según peso, género y otros factores.
+            <strong>(*)</strong> La cantidad de bebidas es una <strong>estimación</strong> para un hombre promedio. El nivel de alcohol en sangre real varía según peso, género, metabolismo, etc. Esta visualización es educativa y no reemplaza el consejo médico profesional.<br>
+            <span style="font-size: 0.9em;">Fuentes sobre BAC, BPS y efectos: National Institute on Alcohol Abuse and Alcoholism (NIAAA), USA y NHTSA.</span> </div>
+    </div>
+
+    <div id="videoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modalTitle">Título del Estado</h2>
+            <video id="modalVideo" controls controlsList="nodownload">
+                Tu navegador no soporta la etiqueta de video.
+            </video>
+            <div id="modalDescription" class="modal-description-structured">
+                </div>
         </div>
     </div>
+
+    <script>
+
+        // --- (MODIFICADO) Datos de los estados con descripciones HTML ---
+        const statesData = [
+            { title: "Sobrio (0%)", video: "videos/estado_0.mp4", description: `
+                <h4 class="effects-subtitle">✅ Estado Base</h4>
+                <p class="key-fact-text">Tu cuerpo opera sin interferencias. Este es el punto de referencia: todas tus habilidades cognitivas y motoras están intactas.</p>
+
+                <h4 class="effects-subtitle">🧠 Juicio Intacto</h4>
+                <p class="key-fact-text">La capacidad para tomar decisiones, dividir tu atención y reaccionar ante peligros está al 100%.</p>
+            `,
+              bpm: 70, irregularity: 0,    velocity: 2,  lubNote: 'C2', dubNote: 'G2', filterFreq: 600 },
+            
+            { title: "Relajación Inicial (0.03%)", video: "videos/estado_1.0.mp4", description: `
+                <h4 class="effects-subtitle">😊 Percepción: "Me siento bien"</h4>
+                <p class="key-fact-text">Comienzas a sentirte relajado, cálido y ligeramente eufórico. Crees tener todo bajo control.</p>
+
+                <h4 class="effects-subtitle">🧠 Realidad: El Deterioro Inicia</h4>
+                <p class="key-fact-text">La ironía del alcohol: tu juicio ya está afectado. La incapacidad de reconocer el deterioro es, de hecho, el primer síntoma del deterioro.</p>
+            `,
+              bpm: 80, irregularity: 0,    velocity: 2,  lubNote: 'C2', dubNote: 'G2', filterFreq: 600 },
+            
+            { title: "Euforia (0.06%)", video: "videos/estado_2.0.mp4", description: `
+                <h4 class="effects-subtitle">🎉 Percepción: "Estoy sociable"</h4>
+                <p class="key-fact-text">Te sientes eufórico y desinhibido. Las emociones (buenas y malas) se exageran y la timidez desaparece.</p>
+
+                <h4 class="effects-subtitle">🧠 Realidad: Juicio Afectado</h4>
+                <p class="key-fact-text">El área del cerebro que controla el razonamiento y la memoria está afectada. Esto reduce tu capacidad de respuesta ante emergencias.</p>
+            `,
+              bpm: 90, irregularity: 0,    velocity: 2, lubNote: 'C#2', dubNote: 'G#2', filterFreq: 650 },
+            
+            { title: "Deterioro Leve (0.09%)", video: "videos/estado_3.mp4", description: `
+                <h4 class="effects-subtitle">🥴 Percepción: "Estoy mareado"</h4>
+                <p class="key-fact-text">El equilibrio, el habla y la visión están visiblemente afectados. La fatiga mental y física es evidente para ti y para los demás.</p>
+
+                <h4 class="effects-subtitle">⚠️ Riesgo: Peligro Real</h4>
+                <p class="key-fact-text">Tu capacidad para detectar peligros está dañada. Tienes aproximadamente 4 veces más probabilidades de chocar que un conductor sobrio.</p>
+            `,
+              bpm: 100, irregularity: 0.0, velocity: 2, lubNote: 'D2', dubNote: 'A2', filterFreq: 700 },
+            
+            { title: "Incapacidad (0.12%)", video: "videos/estado_4.0.mp4", description: `
+                <h4 class="effects-subtitle">🤢 Efecto Depresivo</h4>
+                <p class="key-fact-text">La sensación de euforia desaparece y es reemplazada por un efecto depresivo (ansiedad o tristeza). Son comunes las náuseas y el vómito.</p>
+
+                <h4 class="effects-subtitle">⚠️ Riesgo: Multiplicado</h4>
+                <p class="key-fact-text">Tu control muscular es mínimo. El riesgo de un accidente fatal en este nivel (o cercano a 0.15) es al menos 12 veces mayor que en sobriedad.</p>
+            `,
+              bpm: 110, irregularity: 0.0, velocity: 2,  lubNote: 'D2', dubNote: 'A2', filterFreq: 650 },
+            
+            { title: "Deterioro Grave (0.26%)", video: "videos/estado_5.0.mp4", description: `
+                <h4 class="effects-subtitle">😵 Desorientación Total (Estupor)</h4>
+                <p class="key-fact-text">Estás en un estado de confusión y desorientación. No comprendes dónde estás ni qué hora es.</p>
+
+                <h4 class="effects-subtitle">🧠 Consecuencia: Amnesia</h4>
+                <p class="key-fact-text">Es muy probable que sufras un "blackout" (amnesia). Puedes realizar acciones y hablar, pero no tendrás ningún recuerdo de ello al día siguiente.</p>
+            `,
+              bpm: 60, irregularity: 0.0,  velocity: 2, lubNote: 'B1', dubNote: 'F#2', filterFreq: 500 },
+            
+            { title: "Riesgo Vital (0.31%+)", video: "videos/estado_6.0.mp4", description: `
+                <h4 class="effects-subtitle">☠️ Emergencia Médica: Coma</h4>
+                <p class="key-fact-text">Has alcanzado un nivel de anestesia quirúrgica. El cuerpo entra en coma para protegerse de la intoxicación aguda por alcohol.</p>
+
+                <h4 class="effects-subtitle">💔 Falla Sistémica</h4>
+                <p class_name="key-fact-text">Los reflejos vitales, como la respiración y el ritmo cardíaco, comienzan a fallar. La muerte por paro respiratorio es una posibilidad real.</p>
+            `,
+              bpm: 40, irregularity: 0.0,  velocity: 2,  lubNote: 'A1', dubNote: 'E2', filterFreq: 400 }
+        ];
+
+        // --- Lógica para la Modal ---
+        const modal = document.getElementById("videoModal");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalVideo = document.getElementById("modalVideo");
+        const modalDescription = document.getElementById("modalDescription");
+        const closeButton = document.querySelector(".close-button");
+
+        function openModal(stateIndex) {
+            stopHeartbeat(); // Detener sonido hover
+            if (stateIndex >= 0 && stateIndex < statesData.length) {
+                const data = statesData[stateIndex];
+                modalTitle.textContent = data.title;
+                modalVideo.src = data.video;
+                modalDescription.innerHTML = data.description;
+                modal.style.display = "flex"; // Mostrar modal
+                modalVideo.load();
+                modalVideo.play().catch(e => console.error("Error al reproducir video:", e)); // Añadir catch para errores
+            } else { console.error("Índice inválido:", stateIndex); }
+        }
+
+        function closeModal() {
+            modal.style.display = "none"; // Ocultar modal
+            modalVideo.pause();
+            modalVideo.currentTime = 0;
+            modalVideo.src = ""; // Limpiar src
+            modalDescription.innerHTML = "";
+        }
+        closeButton.addEventListener('click', closeModal);
+        modal.addEventListener('click', (event) => { if (event.target === modal) { closeModal(); } });
+        window.addEventListener('keydown', (event) => { if (event.key === 'Escape' && modal.style.display === 'flex') { closeModal(); } });
+        // Cierra modal al terminar el video
+
+        // --- Lógica de Sonificación con Tone.js (Corregida versión Lub-Dub) ---
+        let lubSynth, dubSynth;
+        let lowPassFilter;
+        let loop;
+
+        function initializeAudio() {
+            if (!lubSynth) {
+                lubSynth = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.15, sustain: 0.05, release: 0.2 } });
+                dubSynth = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.005, decay: 0.08, sustain: 0.02, release: 0.1 } });
+                lowPassFilter = new Tone.Filter({ type: 'lowpass', Q: 1 }).toDestination();
+                lubSynth.connect(lowPassFilter);
+                dubSynth.connect(lowPassFilter);
+            }
+        }
+
+        function startHeartbeat(stateIndex) {
+            initializeAudio();
+
+            if (stateIndex < 0 || stateIndex >= statesData.length) return;
+            const data = statesData[stateIndex];
+            const bpm = data.bpm;
+            const irregularity = data.irregularity || 0;
+            const velocity = data.velocity;
+            const lubNote = data.lubNote;
+            const dubNote = data.dubNote;
+            const filterFreq = data.filterFreq;
+
+            if (loop) { loop.stop(0); loop.dispose(); }
+
+            // Ajustar frecuencia del filtro suavemente
+            lowPassFilter.frequency.rampTo(filterFreq, 0.1);
+
+            const baseInterval = 60 / bpm;
+            const lubDubDelay = baseInterval * 0.3; // Delay proporcional al intervalo
+
+             // Aseguramos irregularidad dentro de límites razonables
+            const maxDeviationFactor = Math.min(irregularity, 0.8); // No más del 80% de variación
+
+
+            loop = new Tone.Loop(time => {
+                // Cálculo de intervalo con irregularidad limitada
+                 const deviationFactor = (Math.random() - 0.5) * 2 * maxDeviationFactor;
+                 let currentInterval = baseInterval * (1 + deviationFactor);
+                 // Evitar intervalos demasiado cortos o negativos si la irregularidad es alta
+                 currentInterval = Math.max(currentInterval, baseInterval * 0.2); // Intervalo mínimo 20% del base
+
+
+                // Programar Lub y Dub
+                lubSynth.triggerAttackRelease(lubNote, '8n', time, velocity * 0.9);
+                dubSynth.triggerAttackRelease(dubNote, '16n', time + lubDubDelay, velocity);
+
+                loop.interval = currentInterval; // Ajustar próximo ciclo
+
+            }, baseInterval);
+
+            Tone.Transport.start();
+            loop.start(0);
+        }
+
+        function stopHeartbeat() {
+            if (loop) {
+                loop.stop(0);
+                loop.dispose();
+                loop = null;
+            }
+            // Suelta las notas si estaban sonando al salir rápido
+             if (lubSynth && lubSynth.context.state === 'running') lubSynth.triggerRelease(Tone.now());
+             if (dubSynth && dubSynth.context.state === 'running') dubSynth.triggerRelease(Tone.now());
+        }
+
+        // --- Asignación de Eventos ---
+        document.querySelectorAll('.bac-column').forEach(column => {
+            column.addEventListener('mouseenter', async () => {
+                try {
+                     // Intenta iniciar Tone.js solo si no está corriendo
+                     if (Tone.context.state !== 'running') {
+                         await Tone.start();
+                         console.log("AudioContext started!");
+                     }
+                    const stateIndex = parseInt(column.getAttribute('data-state-index'));
+                    startHeartbeat(stateIndex);
+                } catch (e) {
+                    console.error("Error starting Tone.js or heartbeat:", e);
+                }
+            });
+            column.addEventListener('mouseleave', stopHeartbeat);
+            column.addEventListener('click', () => {
+                const stateIndex = parseInt(column.getAttribute('data-state-index'));
+                openModal(stateIndex);
+            });
+        });
+
+    </script>
 
 </body>
 </html>
