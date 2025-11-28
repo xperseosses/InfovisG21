@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Efectos del Alcohol en la Sangre - Interactivo</title>
+    <title>Torrente Biónico - Interfaz de Control</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <style>
         /* --- Estilos Generales --- */
@@ -41,29 +41,29 @@
         }
         header h1 { margin: 0; font-size: 1.5em; }
         
-        /* --- ESTILO DEL BOTÓN DE CONEXIÓN FÍSICA --- */
-        #btnConnect {
+        /* --- BOTONES DE CONTROL --- */
+        .header-btn {
             padding: 8px 16px;
-            background-color: #6c757d; /* Gris por defecto */
             color: white;
             border: none;
             border-radius: 20px;
             cursor: pointer;
             font-weight: bold;
             font-size: 0.9em;
-            transition: background-color 0.3s, transform 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: transform 0.2s, background-color 0.3s;
             display: flex;
             align-items: center;
             gap: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
-        #btnConnect:hover {
-            background-color: #5a6268;
-            transform: translateY(-1px);
-        }
-        /* Clase para cuando está conectado */
-        #btnConnect.connected {
-            background-color: #28a745; /* Verde */
+        .header-btn:hover { transform: translateY(-1px); }
+
+        #btnConnect { background-color: #6c757d; }
+        #btnConnect.connected { background-color: #28a745; }
+        
+        #btnOpenControl { 
+            background-color: #3498db; 
+            display: none; /* Oculto hasta conectar */
         }
 
         /* --- Barra de Gradiente --- */
@@ -71,11 +71,7 @@
             height: 30px;
             width: 100%;
             flex-shrink: 0;
-            background: linear-gradient(to right,
-                #2ecc71, /* Verde (Bienestar) */
-                #f1c40f, /* Amarillo (Advertencia) */
-                #000000  /* Negro (Malestar Severo) */
-            );
+            background: linear-gradient(to right, #2ecc71, #f1c40f, #000000);
         }
 
         .disclaimer {
@@ -97,7 +93,6 @@
             overflow-x: auto;
         }
 
-        /* --- Cada Columna --- */
         .bac-column {
             flex: 1;
             min-width: 160px;
@@ -117,42 +112,20 @@
         }
         .bac-column:last-child { border-right: none; }
 
-        /* --- Contenido Interno --- */
-        .bac-info {
-            height: 12vw;
-            display: flex;
-            flex-direction: column;
-            min-height: 80px;
-        }
+        .bac-info { height: 12vw; display: flex; flex-direction: column; min-height: 80px; }
         .bac-info h3 { margin: 0 0 5px 0; font-size: 1.5vw; }
         .bac-info .drinks { font-size: 2.5vw; margin: 5px 0; }
 
-        .effects-info {
-            margin-top: 15px;
-            display: flex;
-            flex-direction: column;
-            text-align: center;
-            flex-grow: 1;
-            margin-bottom: 10px;
-        }
+        .effects-info { margin-top: 15px; display: flex; flex-direction: column; text-align: center; flex-grow: 1; margin-bottom: 10px; }
         .effects-info h2 { font-size: 1.2vw; margin: 0 0 12px 0; }
         
-        .state-drawing {
-            padding-top: 0px;
-            height: 14vw;
-            min-height: 100px;
-            max-height: 180px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-        }
+        .state-drawing { padding-top: 0px; height: 14vw; min-height: 100px; max-height: 180px; display: flex; align-items: center; justify-content: center; width: 100%; }
         .state-drawing img { max-height: 100%; max-width: 100%; object-fit: contain; }
 
         .click-indicator { font-size: 1.8em; color: rgba(0, 0, 0, 0.4); display: block; }
         .click-indicator-text { font-size: 0.8em; color: #6c757d; margin-top: 2px; }
 
-        /* --- Estilos Modal --- */
+        /* --- Estilos Modales --- */
         .modal {
             display: none;
             position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7);
@@ -160,56 +133,23 @@
         }
         .modal-content { background-color: #fefefe; margin: auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 700px; text-align: center; border-radius: 8px; position: relative; }
         .close-button { color: #aaa; position: absolute; top: 10px; right: 20px; font-size: 28px; font-weight: bold; cursor: pointer; }
-        .close-button:hover, .close-button:focus { color: black; text-decoration: none; }
-        .modal-content video { width: 100%; max-height: 70vh; margin-bottom: 15px; }
+        .close-button:hover { color: black; }
+        
+        /* Botones del Panel Físico */
+        .phy-btn {
+            padding: 15px; font-size: 1.1em; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 15px; text-align: left; transition: transform 0.1s; margin-bottom: 10px; border-width: 2px; border-style: solid;
+        }
+        .phy-btn:active { transform: scale(0.98); }
+        .phy-btn strong { display: block; margin-bottom: 4px; }
 
-        .modal-description-structured {
-            text-align: left;
-            margin-top: 20px;
-            padding: 0 10px;
-            font-size: 0.95em;
-            color: #333;
-        }
-        .modal-description-structured h4 {
-            font-size: 1.1em;
-            color: #000;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 4px;
-            margin-top: 15px;
-            margin-bottom: 8px;
-        }
-        .modal-description-structured ul {
-            list-style: disc;
-            padding-left: 20px;
-            margin: 0;
-        }
-        .modal-description-structured li { margin-bottom: 5px; }
-
-        /* --- Responsive --- */
+        /* Responsive */
         @media (max-width: 900px) {
-            main { flex-direction: column; overflow-x: hidden; }
-            .bac-column { border-right: none; border-bottom: 1px solid var(--color-borde); min-width: unset; width: auto; padding: 15px; }
-            .bac-column:last-child { border-bottom: none; }
-             .bac-info, .state-drawing { height: auto; min-height: unset;}
+            main { flex-direction: column; }
+            .bac-column { border-right: none; border-bottom: 1px solid var(--color-borde); }
              .bac-info h3 { font-size: 3.5vw; }
              .bac-info .drinks { font-size: 5vw; }
              .effects-info h2 { font-size: 3.2vw; }
-             .state-drawing { height: 150px; }
-             .click-indicator { font-size: 1.5em; }
-             .click-indicator-text { font-size: 0.75em;}
-            .modal-content { width: 95%; }
         }
-         @media (max-width: 480px) {
-              header { flex-direction: column; gap: 10px; }
-              header h1 { font-size: 1.2em; }
-              .bac-info h3 { font-size: 4.5vw; }
-              .bac-info .drinks { font-size: 7vw; }
-              .effects-info h2 { font-size: 4.2vw; }
-              .state-drawing { height: 120px; }
-              .click-indicator { font-size: 1.2em; }
-              .click-indicator-text { font-size: 0.7em;}
-              .disclaimer { font-size: 0.75em; }
-         }
     </style>
 </head>
 <body>
@@ -217,11 +157,13 @@
     <div class="container">
         <header>
             <div>
-                <h1>Efectos en el cuerpo del Nivel de Alcohol en sangre</h1>
-                <span style="font-size: 0.9em; opacity: 0.9;">Usa 🎧 y pon el cursor en los estados.</span>
+                <h1>Efectos del Alcohol en la Sangre</h1>
             </div>
-            <button id="btnConnect" onclick="connectSerial()" title="Conectar a la maqueta Arduino vía USB">
-                🔌 Activar Maqueta Física
+            <button id="btnConnect" class="header-btn" onclick="connectSerial()" title="Conectar Arduino">
+                🔌 Conectar Maqueta
+            </button>
+            <button id="btnOpenControl" class="header-btn" onclick="openPhysicalPanel()" title="Abrir Panel de Control">
+                🎛️ Panel de Control
             </button>
         </header>
         
@@ -229,175 +171,188 @@
 
         <main>
             <article class="bac-column" id="col-0" data-state-index="0">
-                <div class="state-drawing"><img src="imagenes/bienestar.png" alt="Ilustración de bienestar"></div>
+                <div class="state-drawing"><img src="imagenes/bienestar.png"></div>
                 <div class="bac-info"><h3>0%</h3><div class="drinks">🫙</div></div>
                 <div class="effects-info"><h2>Sobrio</h2></div>
                 <div><span class="click-indicator">▶️</span><div class="click-indicator-text">Ver video</div></div>
             </article>
             <article class="bac-column" id="col-1" data-state-index="1">
-                 <div class="state-drawing"><img src="imagenes/relajacion_inicial2.png" alt="Ilustración de relajación inicial"></div>
+                 <div class="state-drawing"><img src="imagenes/relajacion_inicial2.png"></div>
                 <div class="bac-info"><h3>0.03%</h3><div class="drinks">🍺</div></div>
                 <div class="effects-info"><h2>Relajación Inicial</h2></div>
                  <div><span class="click-indicator">▶️</span><div class="click-indicator-text">Ver video</div></div>
             </article>
             <article class="bac-column" id="col-2" data-state-index="2">
-                 <div class="state-drawing"><img src="imagenes/euforia2.png" alt="Ilustración de euforia"></div>
+                 <div class="state-drawing"><img src="imagenes/euforia2.png"></div>
                 <div class="bac-info"><h3>0.06%</h3><div class="drinks">🍺🍺</div></div>
                 <div class="effects-info"><h2>Euforia</h2></div>
                  <div><span class="click-indicator">▶️</span><div class="click-indicator-text">Ver video</div></div>
             </article>
              <article class="bac-column" id="col-3" data-state-index="3">
-                 <div class="state-drawing"><img src="imagenes/deterioro_evidente.png" alt="Ilustración de deterioro evidente"></div>
+                 <div class="state-drawing"><img src="imagenes/deterioro_evidente.png"></div>
                 <div class="bac-info"><h3>0.09%</h3><div class="drinks">🍺🍺🍺</div></div>
                 <div class="effects-info"><h2>Deterioro Leve</h2></div>
                  <div><span class="click-indicator">▶️</span><div class="click-indicator-text">Ver video</div></div>
             </article>
              <article class="bac-column" id="col-4" data-state-index="4">
-                 <div class="state-drawing"><img src="imagenes/legalmente_incapacitado.png" alt="Ilustración de legalmente incapacitado"></div>
+                 <div class="state-drawing"><img src="imagenes/legalmente_incapacitado.png"></div>
                 <div class="bac-info"><h3>0.12%</h3><div class="drinks">🍺🍺🍺🍺</div></div>
                 <div class="effects-info"><h2>Incapacidad</h2></div>
                  <div><span class="click-indicator">▶️</span><div class="click-indicator-text">Ver video</div></div>
             </article>
              <article class="bac-column" id="col-5" data-state-index="5">
-                 <div class="state-drawing"><img src="imagenes/deterioro_grave.png" alt="Ilustración de deterioro grave"></div>
-                 <div class="bac-info"><h3>0.26%</h3><div class="drinks">🍺🍺🍺🍺🍺🍺🍺🍺</div></div>
+                 <div class="state-drawing"><img src="imagenes/deterioro_grave.png"></div>
+                 <div class="bac-info"><h3>0.26%</h3><div class="drinks">🍺🍺🍺🍺🍺🍺</div></div>
                  <div class="effects-info"><h2>Deterioro Grave</h2></div>
                   <div><span class="click-indicator">▶️</span><div class="click-indicator-text">Ver video</div></div>
              </article>
             <article class="bac-column" id="col-6" data-state-index="6">
-                 <div class="state-drawing"><img src="imagenes/riesgo_vital.png" alt="Ilustración de riesgo vital"></div>
-                <div class="bac-info"><h3>0.31% y más</h3><div class="drinks">☠️</div></div>
+                 <div class="state-drawing"><img src="imagenes/riesgo_vital.png"></div>
+                <div class="bac-info"><h3>0.31%+</h3><div class="drinks">☠️</div></div>
                 <div class="effects-info"><h2>Riesgo Vital</h2></div>
                  <div><span class="click-indicator">▶️</span><div class="click-indicator-text">Ver video</div></div>
             </article>
         </main>
+        
         <div class="disclaimer">
-            <strong>(*)</strong> La cantidad de bebidas es una <strong>estimación</strong>. Esta visualización es educativa.<br>
-            <span style="font-size: 0.9em;">Fuentes: NIAAA y NHTSA.</span>
+            <strong>(*)</strong> Visualización educativa con fines académicos.
         </div>
     </div>
 
     <div id="videoModal" class="modal">
         <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <h2 id="modalTitle">Título del Estado</h2>
-            <video id="modalVideo" controls controlsList="nodownload">
-                Tu navegador no soporta la etiqueta de video.
-            </video>
-            <div id="modalDescription" class="modal-description-structured">
-                </div>
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Título</h2>
+            <video id="modalVideo" controls controlsList="nodownload" style="width:100%; max-height:60vh;"></video>
+            <div id="modalDescription" class="modal-description-structured"></div>
+        </div>
+    </div>
+
+    <div id="physicalModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close-button" onclick="closePhysicalPanel()">&times;</span>
+            <h2 style="border-bottom: 2px solid #eee; padding-bottom: 10px;">🫀 Control del Brazo Biónico</h2>
+            <p style="color:#666; margin-bottom:20px;">Controla la maqueta física en tiempo real.</p>
+            
+            <button class="phy-btn" onclick="triggerPhysicalState(0)" style="background: #e8f5e9; border-color: #2ecc71;">
+                <span style="font-size: 2em;">🟢</span> 
+                <div><strong>Fase 1: Calma (Sobrio)</strong><small>Flujo laminar, luz verde.</small></div>
+            </button>
+
+            <button class="phy-btn" onclick="triggerPhysicalState(1)" style="background: #fffde7; border-color: #f1c40f;">
+                <span style="font-size: 2em;">🟡</span> 
+                <div><strong>Fase 2: Agitación (Euforia)</strong><small>Taquicardia, flujo rápido.</small></div>
+            </button>
+
+            <button class="phy-btn" onclick="triggerPhysicalState(2)" style="background: #ffebee; border-color: #e74c3c;">
+                <span style="font-size: 2em;">🔴</span> 
+                <div><strong>Fase 3: Crítico (Fallo)</strong><small>Arritmia y paro circulatorio.</small></div>
+            </button>
+
+            <hr style="margin: 20px 0; border:0; border-top:1px solid #ddd;">
+
+            <button onclick="playFullSequence()" style="width: 100%; padding: 15px; background: #34495e; color: white; border: none; border-radius: 8px; font-size: 1.1em; cursor: pointer; font-weight: bold;">
+                ▶️ Reproducir Historia Completa
+            </button>
+            <p id="sequenceStatus" style="margin-top: 10px; font-style: italic; color: #555; font-weight:bold; min-height: 20px;"></p>
         </div>
     </div>
 
     <script>
-        // --- LÓGICA DE CONEXIÓN FÍSICA (ARDUINO / WEB SERIAL) ---
+        // --- 1. CONFIGURACIÓN DE DATOS ---
+        const statesData = [
+            { title: "Sobrio (0%)", video: "videos/estado_0.mp4", description: `<h4 class="effects-subtitle">✅ Estado Base</h4><p>Tu cuerpo opera sin interferencias.</p>`, bpm: 70, velocity: 2, lubNote: 'C2', dubNote: 'G2', filterFreq: 600 },
+            { title: "Relajación (0.03%)", video: "videos/estado_1.0.mp4", description: `<h4 class="effects-subtitle">😊 Relajación</h4><p>Leve euforia y relajación.</p>`, bpm: 80, velocity: 2, lubNote: 'C2', dubNote: 'G2', filterFreq: 600 },
+            { title: "Euforia (0.06%)", video: "videos/estado_2.0.mp4", description: `<h4 class="effects-subtitle">🎉 Desinhibición</h4><p>Emociones exageradas y menos control.</p>`, bpm: 90, velocity: 2, lubNote: 'C#2', dubNote: 'G#2', filterFreq: 650 },
+            { title: "Deterioro Leve (0.09%)", video: "videos/estado_3.mp4", description: `<h4 class="effects-subtitle">🥴 Desequilibrio</h4><p>Visión y habla afectadas.</p>`, bpm: 100, velocity: 2, lubNote: 'D2', dubNote: 'A2', filterFreq: 700 },
+            { title: "Incapacidad (0.12%)", video: "videos/estado_4.0.mp4", description: `<h4 class="effects-subtitle">🤢 Confusión</h4><p>Pérdida de control motor.</p>`, bpm: 110, velocity: 2,  lubNote: 'D2', dubNote: 'A2', filterFreq: 650 },
+            { title: "Deterioro Grave (0.26%)", video: "videos/estado_5.0.mp4", description: `<h4 class="effects-subtitle">😵 Estupor</h4><p>Posible pérdida de consciencia.</p>`, bpm: 60, velocity: 2, lubNote: 'B1', dubNote: 'F#2', filterFreq: 500 },
+            { title: "Riesgo Vital (0.31%)", video: "videos/estado_6.0.mp4", description: `<h4 class="effects-subtitle">☠️ Coma Etílico</h4><p>Fallo respiratorio inminente.</p>`, bpm: 40, velocity: 2,  lubNote: 'A1', dubNote: 'E2', filterFreq: 400 }
+        ];
+
+        // --- 2. LÓGICA DE CONEXIÓN ARDUINO (WEB SERIAL) ---
         let port, writer;
 
         async function connectSerial() {
-            // Verifica si el navegador soporta Web Serial API (Chrome/Edge)
             if (!navigator.serial) {
-                alert("Tu navegador no soporta Web Serial. Usa Chrome, Edge u Opera en PC.");
+                alert("Tu navegador no soporta Web Serial. Usa Chrome o Edge en PC.");
                 return;
             }
-
             try {
-                // Solicita al usuario seleccionar el puerto del Arduino
                 port = await navigator.serial.requestPort();
-                await port.open({ baudRate: 9600 }); // Velocidad estándar
-
-                // Configura el flujo de escritura
+                await port.open({ baudRate: 9600 });
+                
                 const textEncoder = new TextEncoderStream();
                 const writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
                 writer = textEncoder.writable.getWriter();
 
-                // Feedback visual en el botón
+                // Actualizar interfaz
                 const btn = document.getElementById("btnConnect");
-                btn.innerHTML = "✅ Maqueta Conectada";
+                btn.innerHTML = "✅ Conectado";
                 btn.classList.add("connected");
+                document.getElementById("btnOpenControl").style.display = "inline-block"; // Mostrar panel
                 
-                console.log("Arduino conectado exitosamente.");
-
             } catch (e) {
-                console.error("Error al conectar con Arduino:", e);
-                alert("No se pudo conectar. Asegúrate de seleccionar el puerto correcto.");
+                console.error("Error conexión:", e);
+                alert("No se pudo conectar al Arduino.");
             }
         }
 
-        async function sendStateToArduino(stateIndex) {
-            if (!writer) return; // Si no está conectado, no hace nada (Modo Solo Web)
+        // --- 3. FUNCIONES DEL PANEL DE CONTROL ---
+        function openPhysicalPanel() { document.getElementById("physicalModal").style.display = "flex"; }
+        function closePhysicalPanel() { 
+            document.getElementById("physicalModal").style.display = "none";
+            stopHeartbeat(); // Detener sonido/bomba al cerrar
+        }
 
-            let signal = '0'; // Señal por defecto (Calma)
+        async function triggerPhysicalState(physicalStateId) {
+            if (!writer) return;
 
-            // --- MAPEO DE ESTADOS WEB (7) A ESTADOS FÍSICOS (3) ---
-            if (stateIndex <= 1) {
-                signal = '0'; // 0% y 0.03% -> CALMA (Luz Verde, Bomba Suave)
-            } else if (stateIndex >= 2 && stateIndex <= 4) {
-                signal = '1'; // 0.06% a 0.12% -> AGITADO (Luz Amarilla, Bomba Rápida)
-            } else {
-                signal = '2'; // 0.26% y Riesgo Vital -> CRÍTICO (Luz Roja, Bomba Arrítmica/Paro)
-            }
-
+            // 1. Enviar el cambio de Estado (Luces)
             try {
-                await writer.write(signal);
-                console.log(`Estado ${stateIndex} -> Enviando señal física: '${signal}'`);
-            } catch (e) {
-                console.error("Error enviando señal al Arduino:", e);
-            }
-        }
-        // ----------------------------------------------------------
+                await writer.write(String(physicalStateId));
+                console.log("Estado físico activado:", physicalStateId);
+            } catch (e) { console.error(e); }
 
-        const statesData = [
-            // Tus datos originales se mantienen igual...
-            { title: "Sobrio (0%)", video: "videos/estado_0.mp4", description: `...`, bpm: 70, velocity: 2, lubNote: 'C2', dubNote: 'G2', filterFreq: 600 },
-            { title: "Relajación Inicial (0.03%)", video: "videos/estado_1.0.mp4", description: `...`, bpm: 80, velocity: 2, lubNote: 'C2', dubNote: 'G2', filterFreq: 600 },
-            { title: "Euforia (0.06%)", video: "videos/estado_2.0.mp4", description: `...`, bpm: 90, velocity: 2, lubNote: 'C#2', dubNote: 'G#2', filterFreq: 650 },
-            { title: "Deterioro Leve (0.09%)", video: "videos/estado_3.mp4", description: `...`, bpm: 100, velocity: 2, lubNote: 'D2', dubNote: 'A2', filterFreq: 700 },
-            { title: "Incapacidad (0.12%)", video: "videos/estado_4.0.mp4", description: `...`, bpm: 110, velocity: 2,  lubNote: 'D2', dubNote: 'A2', filterFreq: 650 },
-            { title: "Deterioro Grave (0.26%)", video: "videos/estado_5.0.mp4", description: `...`, bpm: 60, velocity: 2, lubNote: 'B1', dubNote: 'F#2', filterFreq: 500 },
-            { title: "Riesgo Vital (0.31%+)", video: "videos/estado_6.0.mp4", description: `...`, bpm: 40, velocity: 2,  lubNote: 'A1', dubNote: 'E2', filterFreq: 400 }
-        ];
+            // 2. INICIAR EL LATIDO (Bomba + Sonido)
+            // Necesitamos mapear el estado físico (0,1,2) a un índice de datos (0-6) para que Tone.js sepa qué ritmo tocar.
+            let dataIndexForAudio = 0; 
+            
+            if (physicalStateId === 0) dataIndexForAudio = 0; // Calma -> Sobrio (70 BPM)
+            else if (physicalStateId === 1) dataIndexForAudio = 2; // Agitado -> Euforia (90 BPM)
+            else if (physicalStateId === 2) dataIndexForAudio = 6; // Crítico -> Riesgo Vital (40 BPM)
 
-        // Restauro los textos completos en statesData para que no se pierdan (abreviados arriba por espacio)
-        statesData[0].description = `<h4 class="effects-subtitle">✅ Estado Base</h4><p class="key-fact-text">Tu cuerpo opera sin interferencias. Punto de referencia: habilidades cognitivas y motoras intactas.</p><h4 class="effects-subtitle">🧠 Juicio Intacto</h4><p class="key-fact-text">Capacidad para tomar decisiones y reaccionar al 100%.</p>`;
-        statesData[1].description = `<h4 class="effects-subtitle">😊 Percepción: "Me siento bien"</h4><p class="key-fact-text">Relajación y calidez. Crees tener el control.</p><h4 class="effects-subtitle">🧠 Realidad: El Deterioro Inicia</h4><p class="key-fact-text">Tu juicio ya está afectado. La incapacidad de reconocer el deterioro es el primer síntoma.</p>`;
-        statesData[2].description = `<h4 class="effects-subtitle">🎉 Percepción: "Estoy sociable"</h4><p class="key-fact-text">Eufórico y desinhibido. Emociones exageradas.</p><h4 class="effects-subtitle">🧠 Realidad: Juicio Afectado</h4><p class="key-fact-text">Razonamiento y memoria afectados. Menor capacidad de respuesta.</p>`;
-        statesData[3].description = `<h4 class="effects-subtitle">🥴 Percepción: "Estoy mareado"</h4><p class="key-fact-text">Equilibrio, habla y visión afectados. Fatiga evidente.</p><h4 class="effects-subtitle">⚠️ Riesgo: Peligro Real</h4><p class="key-fact-text">Capacidad de detectar peligros dañada. 4x más riesgo de choque.</p>`;
-        statesData[4].description = `<h4 class="effects-subtitle">🤢 Efecto Depresivo</h4><p class="key-fact-text">Euforia reemplazada por depresión/náuseas. Control muscular mínimo.</p><h4 class="effects-subtitle">⚠️ Riesgo: Multiplicado</h4><p class="key-fact-text">Riesgo de accidente fatal 12 veces mayor.</p>`;
-        statesData[5].description = `<h4 class="effects-subtitle">😵 Desorientación Total</h4><p class="key-fact-text">Confusión severa. No sabes dónde estás.</p><h4 class="effects-subtitle">🧠 Consecuencia: Amnesia</h4><p class="key-fact-text">Probable "blackout". Acciones sin recuerdo posterior.</p>`;
-        statesData[6].description = `<h4 class="effects-subtitle">☠️ Emergencia Médica</h4><p class="key-fact-text">Nivel de anestesia quirúrgica. Coma etílico posible.</p><h4 class="effects-subtitle">💔 Falla Sistémica</h4><p class="key-fact-text">Reflejos vitales fallan. Posible paro respiratorio.</p>`;
-
-
-        // --- Lógica Modal y Audio (Tu código original) ---
-        const modal = document.getElementById("videoModal");
-        const modalTitle = document.getElementById("modalTitle");
-        const modalVideo = document.getElementById("modalVideo");
-        const modalDescription = document.getElementById("modalDescription");
-        const closeButton = document.querySelector(".close-button");
-
-        function openModal(stateIndex) {
-            stopHeartbeat();
-            if (stateIndex >= 0 && stateIndex < statesData.length) {
-                const data = statesData[stateIndex];
-                modalTitle.textContent = data.title;
-                modalVideo.src = data.video;
-                modalDescription.innerHTML = data.description;
-                modal.style.display = "flex";
-                modalVideo.load();
-                modalVideo.play().catch(e => console.error("Error video:", e));
-            }
+            // Iniciamos el motor de audio y pulsos 'P'
+            if (Tone.context.state !== 'running') await Tone.start();
+            startHeartbeat(dataIndexForAudio);
         }
 
-        function closeModal() {
-            modal.style.display = "none";
-            modalVideo.pause();
-            modalVideo.src = "";
-            modalDescription.innerHTML = "";
-        }
-        closeButton.addEventListener('click', closeModal);
-        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-        window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+        async function playFullSequence() {
+            const status = document.getElementById("sequenceStatus");
+            if (!writer) { alert("Conecta el Arduino primero."); return; }
 
-        // --- Tone.js (Corazón) ---
+            status.innerText = "Estado: 🟢 CALMA (Inicio)";
+            triggerPhysicalState(0); // Esto ahora inicia luces Y bomba
+
+            setTimeout(() => {
+                status.innerText = "Estado: 🟡 AGITACIÓN (Consumo)";
+                triggerPhysicalState(1);
+            }, 8000); 
+
+            setTimeout(() => {
+                status.innerText = "Estado: 🔴 CRÍTICO (Fallo Sistémico)";
+                triggerPhysicalState(2);
+            }, 16000); 
+
+            setTimeout(() => {
+                status.innerText = "Fin de la secuencia.";
+                stopHeartbeat(); // Parar todo
+                // Opcional: Apagar luces enviando un estado neutro si tuvieras, o dejarlo en calma
+                triggerPhysicalState(0); 
+            }, 26000); 
+        }
+
+        // --- 4. TONE.JS (SONIDO) ---
         let lubSynth, dubSynth, lowPassFilter, loop;
 
         function initializeAudio() {
@@ -410,6 +365,8 @@
             }
         }
 
+        // Dentro del <script> de index.html, busca la función startHeartbeat:
+
         function startHeartbeat(stateIndex) {
             initializeAudio();
             if (stateIndex < 0 || stateIndex >= statesData.length) return;
@@ -420,42 +377,110 @@
             
             const baseInterval = 60 / data.bpm;
             const lubDubDelay = baseInterval * 0.3;
+            
+            // --- NUEVO: Determinar el estado físico (0, 1, 2) para el Arduino ---
+            let physicalStateSignal;
+            if (stateIndex <= 1) physicalStateSignal = '0'; // Calma
+            else if (stateIndex <= 4) physicalStateSignal = '1'; // Agitado
+            else physicalStateSignal = '2'; // Crítico
 
+            // 1. Enviar el estado fijo la primera vez
+            sendStateToArduino(physicalStateSignal);
+
+            // 2. Configurar el loop para enviar el PULSO 'P' en cada latido
             loop = new Tone.Loop(time => {
+                // Sonido
                 lubSynth.triggerAttackRelease(data.lubNote, '8n', time, data.velocity * 0.9);
                 dubSynth.triggerAttackRelease(data.dubNote, '16n', time + lubDubDelay, data.velocity);
+
+                // SINCRONIZACIÓN: Envía 'P' exactamente cuando suena el LUB (primer golpe)
+                Tone.Draw.schedule(() => {
+                    if (writer) writer.write('P'); 
+                }, time);
+
             }, baseInterval);
 
             Tone.Transport.start();
             loop.start(0);
         }
 
+        // Y debes actualizar la función sendStateToArduino para que acepte '0', '1', '2'
+        // (Esta función es llamada por el botón 'playFullSequence' también)
+
+        async function sendStateToArduino(signal) {
+            if (!writer) return; 
+            
+            // NOTA: Esta función ahora solo envía el caracter de ESTADO que le pasemos ('0', '1', '2')
+            // EL PULSO ('P') se maneja en la función startHeartbeat.
+
+            try {
+                await writer.write(signal);
+                console.log(`Estado físico fijo enviado: '${signal}'`);
+            } catch (e) {
+                console.error("Error enviando señal:", e);
+            }
+        }
+
         function stopHeartbeat() {
             if (loop) { loop.stop(0); loop.dispose(); loop = null; }
         }
 
-        // --- Asignación de Eventos ---
+        // --- 5. EVENTOS ---
+        // Modal de Video
+        function openModal(stateIndex) {
+            stopHeartbeat();
+            const data = statesData[stateIndex];
+            document.getElementById("modalTitle").textContent = data.title;
+            const vid = document.getElementById("modalVideo");
+            vid.src = data.video;
+            document.getElementById("modalDescription").innerHTML = data.description;
+            document.getElementById("videoModal").style.display = "flex";
+            vid.load();
+            vid.play().catch(e => console.log(e));
+        }
+        function closeModal() {
+            document.getElementById("videoModal").style.display = "none";
+            document.getElementById("modalVideo").pause();
+        }
+
+        // Asignar eventos a las columnas
         document.querySelectorAll('.bac-column').forEach(column => {
-            // 1. Hover: Sonido
+    
+            // 1. Hover: Sonido (Sincronizado)
             column.addEventListener('mouseenter', async () => {
                 if (Tone.context.state !== 'running') await Tone.start();
-                const stateIndex = parseInt(column.getAttribute('data-state-index'));
-                startHeartbeat(stateIndex);
+                const idx = parseInt(column.getAttribute('data-state-index'));
+                startHeartbeat(idx);
             });
             
-            // 2. Leave: Parar sonido
+            // 2. Leave: Silencio
             column.addEventListener('mouseleave', stopHeartbeat);
             
-            // 3. Click: Abrir Modal + ENVIAR SEÑAL FÍSICA
+            // 3. Clic: Video + Maqueta Física (INTEGRACIÓN TOTAL)
             column.addEventListener('click', () => {
-                const stateIndex = parseInt(column.getAttribute('data-state-index'));
-                openModal(stateIndex);
+                const idx = parseInt(column.getAttribute('data-state-index'));
                 
-                // ¡Aquí ocurre la magia de la integración!
-                sendStateToArduino(stateIndex);
+                // A. Abrir el video en pantalla
+                openModal(idx);
+                
+                // B. Enviar la señal física al Arduino AUTOMÁTICAMENTE
+                // Mapeo: 0-1 (Calma), 2-4 (Agitado), 5-6 (Crítico)
+                let signal = '0';
+                if (idx <= 1) signal = '0';
+                else if (idx <= 4) signal = '1';
+                else signal = '2';
+                
+                sendStateToArduino(signal); 
             });
         });
 
+        // Cerrar modales con clic fuera
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = "none";
+                if(event.target.id === 'videoModal') document.getElementById("modalVideo").pause();
+            }
+        }
     </script>
 </body>
 </html>
